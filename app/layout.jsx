@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
         lang="en" suppressHydrationWarning>
         <body className={`${headingFont.variable} ${bodyFont.variable} font-sans`}>
           <div className="bg-black">
-          <div className="w-full  lg:mx-auto lg:max-w-[1450px] ">
+          <div className="w-full  lg:mx-auto lg:max-w-[1450px]  border-l border-r border-neutral-800">
           <ThemeProvider
               attribute="class"
               defaultTheme="system"

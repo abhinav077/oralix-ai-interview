@@ -13,3 +13,11 @@ export const SectionLabel = ({ children }) => (
         <span className="w-4 h-px bg-amber-400"/>
         {children}
     </p>);
+
+export const SectionHeading = ({ gray, gold }) => (
+    <h2 className="text-[clamp(2rem,4vw,3em)] leading-[1.1] tracking-[-0.025em]">
+        <GrayTitle>{gray}</GrayTitle>
+        <br/>
+        <GoldTitle>{gold}</GoldTitle>
+    </h2>
+);
