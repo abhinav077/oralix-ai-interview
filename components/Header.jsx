@@ -3,8 +3,11 @@ import React from 'react'
 import { Button } from './ui/button'
 import { MessagesSquare } from 'lucide-react';
 import Link from 'next/link';
+import { checkUser } from '../lib/checkUser';
 
-const Header = () => {
+const Header = async () => {
+  const user = await checkUser();
+
   return (
     <nav className='fixed top-0 left-1/2 -translate-x-1/2 w-full lg:mx-auto lg:max-w-[1450px] z-50 flex items-center justify-between px-10 py-3 border-b border-white/7 backdrop-blur-xl  border-l border-r border-neutral-800'>
 
