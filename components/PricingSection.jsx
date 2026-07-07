@@ -82,7 +82,7 @@ export default function PricingSection() {
             {isActive ? (
               // Already on this plan
               <Button
-                variant={plan.featured ? "outline-gradient" : "default"}
+                variant={plan.featured ? "outline-gradient-stone" : "default"}
                 disabled
                 className="w-full opacity-50 cursor-not-allowed"
               >
@@ -92,7 +92,7 @@ export default function PricingSection() {
               // Free plan — no checkout needed
               isSignedIn ? (
                 <Button
-                  variant="outline-gradient"
+                  variant="outline-gradient-stone"
                   disabled
                   className="w-full opacity-50 cursor-not-allowed"
                 >
@@ -100,7 +100,7 @@ export default function PricingSection() {
                 </Button>
               ) : (
                 <SignInButton mode="modal">
-                  <Button variant="outline-gradient" className="w-full">
+                  <Button variant="outline-gradient-stone-hover" className="w-full">
                     Get started free
                   </Button>
                 </SignInButton>
@@ -120,7 +120,7 @@ export default function PricingSection() {
                 }}
               >
                 <Button
-                  variant={plan.featured ? "outline-gradient" : "outline"}
+                  variant={plan.featured ? "outline-gradient-stone-hover" : "outline"}
                   className="w-full"
                 >
                   {activePlanSlug === "pro" && plan.slug === "starter"
@@ -134,7 +134,7 @@ export default function PricingSection() {
               // Paid plan, signed out → sign in first
               <SignInButton mode="modal">
                 <Button
-                  variant={plan.featured ? "outline-gradient" : "outline"}
+                  variant={plan.featured ? "outline-gradient-amber-hover" : "outline"}
                   className="w-full"
                 >
                   Get started →

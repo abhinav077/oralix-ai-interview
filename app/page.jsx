@@ -88,13 +88,13 @@ export default function Home() {
 
             <div className="relative flex justify-center gap-2 sm:gap-4 mt-10 sm:w-auto">
               <Link href="/onboarding">
-                <Button variant="outline" size="lg">
+                <Button variant="outline-gradient-stone-hover" size="lg">
                   Get started
                 </Button>
               </Link>
 
               <Link href="/explore">
-                <Button variant="outline-gradient" size="lg">
+                <Button variant="outline-gradient-amber-hover" size="lg">
                   Browse Interviewers →
                 </Button>
               </Link>
@@ -363,13 +363,13 @@ export default function Home() {
 
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <Link href="/onboarding" className="relative">
-                    <Button variant="gold" size="lg">
+                    <Button variant="default-gradient-stone-hover" size="lg">
                       Get started
                     </Button>
                   </Link>
 
                   <Link href="/explore" className="relative">
-                    <Button variant="outline" size="lg">
+                    <Button variant="default-gradient-amber-hover" size="lg">
                       Browse Interviewers →
                     </Button>
                   </Link>
