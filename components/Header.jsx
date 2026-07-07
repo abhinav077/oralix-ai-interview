@@ -4,6 +4,7 @@ import { Button } from './ui/button'
 import { MessagesSquare } from 'lucide-react';
 import Link from 'next/link';
 import { checkUser } from '../lib/checkUser';
+import RoleRedirect from './RoleRedirect';
 
 const Header = async () => {
   const user = await checkUser();
@@ -20,6 +21,7 @@ const Header = async () => {
     </div>
 
     {/* Redirecting Logic */}
+    {user && <RoleRedirect role={user.role} />}
 
     {/* Sign In / Sign Up Buttons */}
     <div className='flex items-center gap-3'>
@@ -35,7 +37,6 @@ const Header = async () => {
             <UserButton />
         </Show>
     </div>
-
     </nav>
   )
 }
