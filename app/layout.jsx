@@ -20,9 +20,9 @@ export default function RootLayout({ children }) {
     }}>
       <html
         lang="en" suppressHydrationWarning>
-        <body className={`${headingFont.variable} ${bodyFont.variable} font-sans`}>
+        <body className={`${headingFont.variable} ${bodyFont.variable} font-sans bg-black text-white`}>
           <div className="bg-black">
-          <div className="w-full  lg:mx-auto lg:max-w-[1450px]  border-l border-r border-neutral-800">
+          <div className="w-full lg:mx-auto lg:max-w-362.5 border-l border-r border-neutral-800">
           <ThemeProvider
               attribute="class"
               defaultTheme="system"
