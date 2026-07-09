@@ -5,6 +5,7 @@ import { CheckoutButton } from "@clerk/nextjs/experimental";
 import { SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { PLANS } from "@/lib/data";
+import { Check } from "lucide-react";
 
 export default function PricingSection() {
   const { has, userId } = useAuth();
@@ -72,7 +73,7 @@ export default function PricingSection() {
                   key={f}
                   className="flex items-start gap-2.5 text-sm text-stone-400"
                 >
-                  <span className="text-amber-400 text-xs mt-0.5">✓</span>
+                  <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
                   {f}
                 </li>
               ))}
@@ -86,7 +87,10 @@ export default function PricingSection() {
                 disabled
                 className="w-full opacity-50 cursor-not-allowed"
               >
-                ✓ Current plan
+                <span className="inline-flex items-center gap-2">
+                  <Check className="h-4 w-4" />
+                  Current plan
+                </span>
               </Button>
             ) : plan.planId === null ? (
               // Free plan — no checkout needed

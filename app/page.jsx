@@ -6,7 +6,16 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AI_TAGS, AVATARS, LOGOS, ROLES, SLOTS } from "@/lib/data";
 import { CodeDemo } from "@/components/demo-components-animate-code";
-import { Bot, Wallet } from "lucide-react";
+import {
+  BarChart3,
+  Bot,
+  CalendarDays,
+  Check,
+  MessagesSquare,
+  Shield,
+  Video,
+  Wallet,
+} from "lucide-react";
 import PricingSection from "@/components/PricingSection";
 
 
@@ -216,7 +225,7 @@ export default function Home() {
 
             <div className="col-span-12 md:col-span-4">
               <BentoCard
-                icon="📹"
+                icon={<Video size={20} className="text-amber-400" />}
                 title="HD Video Calls"
                 desc="Powered by Stream. Screen sharing, recording, and instant playback links — all built in."
               >
@@ -226,7 +235,7 @@ export default function Home() {
 
             <div className="col-span-12 md:col-span-4">
               <BentoCard
-                icon="💬"
+                icon={<MessagesSquare size={20} className="text-amber-400" />}
                 title="Persistent Chat"
                 desc="Message your interviewer before and after the call. Share resources, prep notes, and follow-ups in one thread."
               />
@@ -234,7 +243,7 @@ export default function Home() {
 
             <div className="col-span-12 md:col-span-4">
               <BentoCard
-                icon="🔒"
+                icon={<Shield size={20} className="text-amber-400" />}
                 title="Security by Arcjet"
                 desc="Bot protection, rate limiting, and abuse prevention baked into every API route."
               />
@@ -242,7 +251,7 @@ export default function Home() {
 
             <div className="col-span-12 md:col-span-6">
               <BentoCard
-                icon="📊"
+                icon={<BarChart3 size={20} className="text-amber-400" />}
                 title={<GrayTitle>AI Feedback Reports</GrayTitle>}
                 desc="Post-interview analysis by Gemini with actionable insights."
               >
@@ -252,7 +261,7 @@ export default function Home() {
 
             <div className="col-span-12 md:col-span-6">
               <BentoCard
-                icon="🗓️"
+                icon={<CalendarDays size={20} className="text-amber-400" />}
                 title={<GoldTitle>Slot-based Scheduling</GoldTitle>}
                 desc="Interviewers set availability once. Interviewees pick from open slots and confirm with one click — no back-and-forth needed."
               >
@@ -262,7 +271,10 @@ export default function Home() {
                       key={s.label}
                       className={`text-xs px-3 py-1.5 rounded-lg border ${s.cls}`}
                     >
-                      {s.label}
+                        <span className="inline-flex items-center gap-1.5">
+                          {s.label}
+                          {s.booked ? <Check className="h-3 w-3" /> : null}
+                        </span>
                     </span>
                   ))}
                 </div>
@@ -301,8 +313,8 @@ export default function Home() {
                   <ul className="space-y-3">
                     {role.perks.map((p) => (
                       <li key={p} className="flex gap-3 text-sm text-stone-400">
-                        <span className="mt-0.5 min-w-4 h-4 rounded-full bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-xs text-amber-400">
-                          ✓
+                        <span className="mt-0.5 min-w-4 h-4 rounded-full bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-xs text-amber-400 shrink-0">
+                          <Check className="h-3 w-3" />
                         </span>
                         {p}
                       </li>
