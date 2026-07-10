@@ -7,6 +7,7 @@ import { checkUser } from '../lib/checkUser';
 import CreditButton from './CreditButton';   
 import RoleRedirect from './RoleRedirect';
 
+
 const Header = async () => {
   const user = await checkUser();
 
@@ -22,7 +23,7 @@ const Header = async () => {
     </div>
 
     {/* Redirecting Logic */}
-    {/* {user && <RoleRedirect role={user.role} />} */}
+    {user && <RoleRedirect role={user.role} />}
 
     {/* Sign In / Sign Up Buttons */}
     <div className='flex items-center gap-3'>

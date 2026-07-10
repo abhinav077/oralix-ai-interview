@@ -1,9 +1,11 @@
 import { headingFont, bodyFont } from "@/lib/fonts";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
-import { ClerkProvider} from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
 import { dark } from "@clerk/themes";
+import { ui } from "@clerk/ui";
 import Header from "@/components/Header";
+import { Toaster } from "sonner";
 
 
 
@@ -15,7 +17,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider appearance={{
+    <ClerkProvider ui={ui} appearance={{
       theme:dark
     }}>
       <html
@@ -33,6 +35,8 @@ export default function RootLayout({ children }) {
               <Header/>
 
               <main className="max-w-full"> {children}</main>
+
+              <Toaster richColors/>
 
               {/*<Footer />*/}
 
