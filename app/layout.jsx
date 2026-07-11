@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
               {/*<Header />*/}
               <Header/>
 
-              <main className="max-w-full"> {children}</main>
+              <main className="max-w-full">{children}</main>
 
               <Toaster richColors/>
 
