@@ -1,10 +1,16 @@
 "use server"
 
-import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/prisma";
+import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import {StreamClient} from "@stream-io/node-sdk";
+import { request } from "@arcjet/next";
 
-
+const bookingLimited = createRateLimiter({
+    refillRate: 2,
+    interval: "1h",
+    capacity: 5, 
+});
 
 export const getInterviewerProfile = async (interviewerId) => {
     try {
@@ -47,7 +53,7 @@ export const bookSlot = async (interviewerId, startTime, endTime) => {
     }
 
     // Arcjet rate limit
-
+    const req = await request()
 
 
 
@@ -90,7 +96,7 @@ export const bookSlot = async (interviewerId, startTime, endTime) => {
     let streamCallId;
 
     try{
-        const streamClient = new streamClient(
+        const streamClient = new StreamClient(
             process.env.NEXT_PUBLIC_STREAM_API_KEY,
             process.env.STREAM_API_SECRET
         );
