@@ -1,10 +1,12 @@
 "use server"
 
-import { db } from "@/lib/prisma";
+import {db} from "../lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import {StreamClient} from "@stream-io/node-sdk";
 import { request } from "@arcjet/next";
+import { checkRateLimit, createRateLimiter } from "@/lib/arcjet";
+
 
 const bookingLimited = createRateLimiter({
     refillRate: 2,
@@ -18,6 +20,7 @@ export const getInterviewerProfile = async (interviewerId) => {
             where: { id: interviewerId, role: "INTERVIEWER" },
             select: {
                 id: true,
+                clerkUserId: true,
                 name: true,
                 imageUrl: true,
                 title: true,
@@ -27,7 +30,7 @@ export const getInterviewerProfile = async (interviewerId) => {
                 categories: true,
                 creditRate: true,
                 availabilities: {
-                    where: { satus: "AVAILABLE" },
+                    where: { status: "AVAILABLE" },
                     select: { startTime: true, endTime: true },
                     take: 1,
                 },
@@ -53,19 +56,21 @@ export const bookSlot = async (interviewerId, startTime, endTime) => {
     }
 
     // Arcjet rate limit
-    const req = await request()
 
-
-
+    if (process.env.NODE_ENV === "production") {
+        const req = await request();
+        const rateLimitError = await checkRateLimit(bookingLimited, req, user.id);
+        if (rateLimitError) throw new Error(rateLimitError);
+    }
 
     // --------------------------------
 
     const [dbUser, interviewer] = await Promise.all([
-        db.user.findUnique({ where: { clearUserId: user.id } }),
+        db.user.findUnique({ where: { clerkUserId: user.id } }),
         db.user.findUnique({ where: { id: interviewerId} }),
     ]);
 
-    if(!dbUser || dbUser.role !== "USER") {
+    if(!dbUser || dbUser.role !== "INTERVIEWEE") {
         throw new Error("Only Interviewees can book sessions");
     }
     if(!interviewer || interviewer.role !== "INTERVIEWER") {
@@ -98,36 +103,36 @@ export const bookSlot = async (interviewerId, startTime, endTime) => {
     try{
         const streamClient = new StreamClient(
             process.env.NEXT_PUBLIC_STREAM_API_KEY,
-            process.env.STREAM_API_SECRET
+            process.env.STREAM_SECRET_KEY
         );
 
-        await streamClient.updateUser([
+        await streamClient.upsertUsers([
             {
-                id: dbUser.clearUserId,
+                id: dbUser.clerkUserId,
                 name: dbUser.name ?? "Interviewee",
                 image: dbUser.imageUrl ?? undefined,
                 roles: "user",
             },
             {
-                id: interviewer.clearUserId,
+                id: interviewer.clerkUserId,
                 name: interviewer.name ?? "Interviewer",
                 image: interviewer.imageUrl ?? undefined,
                 roles: "interviewer",
             }
         ]);
 
-        streamCallId = `mock-${Date.now()}_$Matth.random()}
-        .toString(36)
-        .slice(2, 7)}`;
+        streamCallId = `mock-${Date.now()}-${Math.random()
+            .toString(36)
+            .slice(2, 7)}`;
 
         const call = streamClient.video.call("default", streamCallId );
 
         await call.getOrCreate({
             data:{
-                created_by_id: dbUser.clearUserId,
+                created_by_id: dbUser.clerkUserId,
                 members:[
-                    {user_id: dbUser.clearUserId, role: "host"},
-                    {user_id: interviewer.clearUserId, role: "host"}
+                    {user_id: dbUser.clerkUserId, role: "host"},
+                    {user_id: interviewer.clerkUserId, role: "host"}
                 ],
                 settings_override: {
                     recording: { mode: "available", quality: "1080p" },
@@ -156,7 +161,7 @@ export const bookSlot = async (interviewerId, startTime, endTime) => {
                 },
             });
 
-            await tx.createTransaction({
+            await tx.creditTransaction.create({
                 data: {
                     userId: dbUser.id,
                     type: "BOOKING_DEDUCTION",
