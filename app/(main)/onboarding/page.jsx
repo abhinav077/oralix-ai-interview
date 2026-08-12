@@ -29,7 +29,7 @@ export default function OnboardingPage() {
     if (data && !loading) {
       router.push(role === "INTERVIEWER" ? "/dashboard" : "/explore");
     }
-  }, [data, router]);
+  }, [data, loading, role, router]);
 
   const toggleCategory = (val) => {
     setForm((prev) => ({
@@ -95,7 +95,7 @@ export default function OnboardingPage() {
                 className="text-left rounded-2xl p-8 border border-white/10 bg-[#0f0f11] hover:border-amber-400/20 hover:-translate-y-0.5 transition-all duration-300"
               >
                 <span className="w-11 h-11 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-xl mb-5">
-                  {r.icon}
+                  <r.icon size={20} aria-hidden="true" />
                 </span>
                 <h3 className="font-serif text-xl tracking-tight mb-3 text-stone-100">
                   {r.title}
@@ -114,7 +114,14 @@ export default function OnboardingPage() {
             <div className="flex items-center justify-between bg-[#0f0f11] border border-white/10 rounded-2xl px-6 py-4">
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-base shrink-0">
-                  {ONBOARDING_ROLES.find((r) => r.value === role)?.icon}
+                  {(() => {
+                    const RoleIcon = ONBOARDING_ROLES.find(
+                      (r) => r.value === role,
+                    )?.icon;
+                    return RoleIcon ? (
+                      <RoleIcon size={16} aria-hidden="true" />
+                    ) : null;
+                  })()}
                 </span>
                 <div>
                   <p className="text-sm font-medium text-stone-200">
