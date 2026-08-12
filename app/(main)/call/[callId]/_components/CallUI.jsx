@@ -18,11 +18,11 @@ import {
   Chat,
   Channel,
   MessageList,
-  MessageInput,
+  MessageComposer,
   Window,
   useCreateChatClient,
 } from "stream-chat-react";
-import "stream-chat-react/dist/css/v2/index.css";
+import "stream-chat-react/dist/css/index.css";
 
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Sparkles, Loader2 } from "lucide-react";
@@ -178,7 +178,7 @@ export default function CallUI({
                   <Channel channel={chatChannel}>
                     <Window>
                       <MessageList />
-                      <MessageInput focus />
+                      <MessageComposer focus />
                     </Window>
                   </Channel>
                 </Chat>
