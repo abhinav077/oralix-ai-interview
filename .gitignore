@@ -49,8 +49,14 @@ next-env.d.ts
 
 # local agent and design-tool state
 /.claude/
+/.agents/
 /.codex/
+/.motion-ai/
 /.impeccable/
 /.superpowers/
 /.docs/
 /docs/
+
+# local redesign planning artifacts
+/DESIGN.md
+/UI_BUILD_PLAN.md

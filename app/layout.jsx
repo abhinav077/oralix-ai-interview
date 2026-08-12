@@ -1,8 +1,6 @@
-import { headingFont, bodyFont, monoFont } from "@/lib/fonts";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import { ClerkProvider } from '@clerk/nextjs'
-import { dark } from "@clerk/themes";
 import { ui } from "@clerk/ui";
 import Header from "@/components/Header";
 import FirstVisitIntro from "@/components/FirstVisitIntro";
@@ -16,11 +14,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider ui={ui} appearance={{
-      theme:dark
-    }}>
-      <html lang="en" suppressHydrationWarning className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
-        <body className={`${headingFont.className} ${bodyFont.className} bg-background text-foreground`}>
+    <ClerkProvider ui={ui}>
+      <html lang="en" suppressHydrationWarning>
+        <body className="bg-background text-foreground">
           <div className="min-h-dvh bg-background">
           <ThemeProvider
               attribute="class"
@@ -28,7 +24,6 @@ export default function RootLayout({ children }) {
               enableSystem
               disableTransitionOnChange>
 
-              {/*<Header />*/}
               <Header/>
 
               <FirstVisitIntro />
@@ -36,8 +31,6 @@ export default function RootLayout({ children }) {
               <main className="max-w-full">{children}</main>
 
               <Toaster richColors/>
-
-              {/*<Footer />*/}
 
             </ThemeProvider>
             </div>

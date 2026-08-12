@@ -12,16 +12,16 @@ const Header = async () => {
   const user = await checkUser();
 
   return (
-    <nav className='fixed inset-x-0 top-0 z-50 isolate bg-transparent px-3 pt-3 sm:px-5'>
-      <div className='mx-auto flex min-h-14 w-full max-w-[1200px] items-center justify-between gap-3 rounded-full border-2 border-[#1a1a1a] bg-[#ffffeb]/95 px-3 py-2 backdrop-blur-md sm:px-5'>
+    <nav className='fixed inset-x-0 top-0 z-50 isolate px-3 pt-3 sm:px-5'>
+      <div className='mx-auto flex min-h-14 w-full max-w-6xl items-center justify-between gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 shadow-sm backdrop-blur-md sm:px-5'>
         <Link
           href={'/'}
-          className='group flex shrink-0 items-center gap-2 rounded-full px-1.5 py-1 text-[#1a1a1a] transition-colors duration-200 hover:text-[#034f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034f46] focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffeb]'
+          className='group flex shrink-0 items-center gap-2 rounded-md px-1.5 py-1 text-foreground transition-colors duration-200 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
         >
-          <span className='grid size-8 place-items-center rounded-full border-2 border-[#1a1a1a] bg-[#f0d7ff] text-[#1a1a1a] transition-transform duration-200 group-hover:rotate-6'>
+          <span className='grid size-8 place-items-center rounded-full border border-border bg-primary/10 text-primary transition-transform duration-200 group-hover:rotate-6'>
             <MessagesSquare size={16} />
           </span>
-          <span className='font-heading text-2xl tracking-[-0.03em] max-[359px]:sr-only'>Oralix</span>
+          <span className='text-lg font-semibold max-[359px]:sr-only'>Oralix</span>
         </Link>
 
         {/* Redirecting Logic */}

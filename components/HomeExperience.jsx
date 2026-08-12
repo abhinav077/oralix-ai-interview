@@ -5,8 +5,6 @@ import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } fro
 import { ArrowDownRight, ArrowUpRight, Check, CircleDollarSign, MessageSquare, Play, Sparkles, Users, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PricingSection from "@/components/PricingSection";
-import HomeMotion from "@/components/HomeMotion";
-import Silk from "@/components/Silk";
 
 const workflow = [
   { title: "Find your person.", body: "Search by the work, perspective, and question that matters to you.", tone: "paper" },
@@ -78,10 +76,8 @@ function InterviewArtifact() {
 export default function HomeExperience() {
   const reduce = useReducedMotion();
   return <main className="overflow-hidden bg-[#ffffeb] text-[#1a1a1a]">
-    <HomeMotion />
     <section className="grain relative isolate min-h-[min(920px,100svh)] overflow-hidden bg-[#1a1a1a] text-[#ffffeb]">
       <InteractiveField reduced={reduce} />
-      {!reduce && <div className="pointer-events-none absolute inset-0 z-[1] opacity-20 mix-blend-screen" aria-hidden="true"><Silk speed={2.2} scale={1.15} color="#034f46" noiseIntensity={1.4} rotation={0.18} /></div>}
       <div className="relative z-10 mx-auto flex min-h-[min(920px,100svh)] w-full max-w-[1320px] flex-col px-5 pb-12 pt-28 sm:px-8 lg:px-12 lg:pt-36">
         <div className="grid flex-1 items-center gap-10 lg:grid-cols-[.9fr_1.1fr] lg:gap-16"><div data-home-hero className="max-w-2xl"><p className="mb-7 flex items-center gap-3 text-xs font-medium tracking-[0.08em] text-[#f0d7ff]"><span className="h-px w-10 bg-[#f0d7ff]" /> Interview Practice, Made Human</p><h1 className="max-w-3xl font-heading text-[clamp(4.4rem,9vw,9.4rem)] leading-[.86] tracking-[-.055em]">Make the next answer feel <span className="text-[#f0d7ff]">possible.</span></h1><p className="mt-8 max-w-md text-base leading-7 text-[#ffffeb]/70 sm:text-lg">Oralix brings thoughtful interviewees and experienced interviewers into the same room—then makes the value of showing up visible.</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button asChild size="lg"><Link href="/onboarding">Find Your Room <ArrowUpRight size={18} /></Link></Button><Button asChild size="lg" variant="outline-gradient-stone"><Link href="/explore">Meet An Interviewer <ArrowDownRight size={17} /></Link></Button></div></div><div className="flex justify-end lg:pr-4"><InterviewArtifact /></div></div>
         <div className="mt-12 flex flex-wrap items-center justify-between gap-5 border-t border-[#ffffeb]/20 pt-5 text-xs text-[#ffffeb]/55"><span className="flex items-center gap-2"><span className="size-2 rounded-full bg-[#ffa946]" /> Built For Both Sides Of The Table</span><span className="flex items-center gap-2"><ArrowDownRight size={14} /> Scroll To See The Exchange</span></div>
