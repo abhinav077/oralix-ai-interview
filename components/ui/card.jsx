@@ -12,7 +12,7 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-[32px] border-2 border-[#1a1a1a] bg-[#ffffeb] py-(--card-spacing) text-sm text-[#1a1a1a] transition-[border-color,background-color,transform] duration-200 hover:-translate-y-0.5 data-[selected=true]:bg-[#f0d7ff] aria-invalid:border-[#8d2f2f] aria-disabled:pointer-events-none aria-disabled:opacity-55 [--card-spacing:--spacing(6)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-[30px] *:[img:last-child]:rounded-b-[30px]",
         className
       )}
       {...props} />
@@ -27,7 +27,7 @@ function CardHeader({
     <div
       data-slot="card-header"
       className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
+        "group/card-header @container/card-header grid auto-rows-min items-start gap-1.5 rounded-t-lg px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
         className
       )}
       {...props} />
@@ -42,7 +42,7 @@ function CardTitle({
     <div
       data-slot="card-title"
       className={cn(
-        "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
+        "font-heading text-xl leading-tight font-normal tracking-[-0.025em] group-data-[size=sm]/card:text-base",
         className
       )}
       {...props} />
@@ -56,7 +56,7 @@ function CardDescription({
   return (
     <div
       data-slot="card-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-sm leading-6 text-muted-foreground", className)}
       {...props} />
   );
 }
@@ -96,7 +96,7 @@ function CardFooter({
     <div
       data-slot="card-footer"
       className={cn(
-        "flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)",
+        "flex items-center rounded-b-lg border-t border-border/80 bg-muted/45 p-(--card-spacing)",
         className
       )}
       {...props} />

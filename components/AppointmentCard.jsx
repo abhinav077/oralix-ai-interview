@@ -35,8 +35,8 @@ export function AppointmentCard({ booking, mode, isPast = false }) {
 
   const creditsStyle =
     mode === "interviewer"
-      ? "border-green-500/20 bg-green-500/10 text-green-400"
-      : "border-amber-400/20 bg-amber-400/5 text-amber-400";
+      ? "border-[#034f46] bg-[#034f46] text-[#ffffeb]"
+      : "border-[#ffa946] bg-[#ffa946]/15 text-[#1a1a1a]";
 
   const isUpcoming = status === "SCHEDULED";
 
@@ -51,41 +51,41 @@ export function AppointmentCard({ booking, mode, isPast = false }) {
         }
       />
 
-      <article className="group relative bg-[#0f0f11] border border-white/10 transition-all duration-300 hover:-translate-y-0.5 rounded-2xl bg-linear-to-t from-transparent via-transparent to-amber-300/10 p-7 flex flex-col gap-6 self-start">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4 min-w-0">
-            <Avatar className="w-14 h-14 border border-white/10 rounded-2xl shrink-0">
+      <article className="paper-card group relative flex min-w-0 flex-col gap-6 p-5 transition-transform duration-300 hover:-translate-y-1 sm:p-6">
+        <div className="grid gap-5 sm:grid-cols-[auto_1fr_auto] sm:items-start">
+          <div className="flex min-w-0 items-center gap-4">
+            <Avatar className="size-12 shrink-0 rounded-full border-2 border-[#1a1a1a]">
               <AvatarImage
                 src={person?.imageUrl}
                 alt={person?.name}
-                className="rounded-2xl"
+                className="rounded-full"
               />
-              <AvatarFallback className="rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 text-lg font-medium">
+              <AvatarFallback className="rounded-full bg-[#f0d7ff] text-base font-medium text-[#034f46]">
                 {person?.name?.[0] ?? "?"}
               </AvatarFallback>
             </Avatar>
 
-            <div className="flex flex-col gap-1 min-w-0">
-              <p className="text-base font-medium text-stone-200 leading-tight truncate">
+            <div className="flex min-w-0 flex-col gap-1">
+              <p className="truncate font-heading text-xl leading-tight tracking-tight">
                 {person?.name ?? "—"}
               </p>
               {person?.title && person?.company ? (
-                <p className="text-xs text-stone-500 truncate">
+                <p className="truncate text-xs text-[#6d6d63]">
                   {person.title}
                   <span className="text-stone-700 mx-1.5">·</span>
                   {person.company}
                 </p>
               ) : (
-                <p className="text-xs text-stone-600 truncate">
+                <p className="truncate text-xs text-[#6d6d63]">
                   {person?.email}
                 </p>
               )}
               {mode === "interviewee" && person?.categories?.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-1">
+                <div className="mt-1 flex flex-wrap gap-1">
                   {person.categories.slice(0, 3).map((cat) => (
                     <span
                       key={cat}
-                      className="text-[10px] px-2 py-0.5 rounded-md border border-amber-400/20 bg-amber-400/5 text-amber-400 leading-tight"
+                      className="rounded-full border border-[#034f46]/25 bg-[#034f46]/5 px-2 py-0.5 text-[10px] leading-tight text-[#034f46]"
                     >
                       {cat.replace("_", " ")}
                     </span>
@@ -95,74 +95,74 @@ export function AppointmentCard({ booking, mode, isPast = false }) {
             </div>
           </div>
 
-          <div className="flex flex-col items-end gap-2 shrink-0">
-            <Badge variant="outline" className={STATUS_STYLES[status]}>
+          <div className="flex flex-row flex-wrap items-center gap-2 sm:flex-col sm:items-end">
+            <Badge variant="outline" className={`${STATUS_STYLES[status]} rounded-none px-2 py-0.5 text-[10px] tracking-wide`}>
               {status.charAt(0) + status.slice(1).toLowerCase()}
             </Badge>
-            <Badge variant="outline" className={creditsStyle}>
+            <Badge variant="outline" className={`${creditsStyle} rounded-none px-2 py-0.5 text-[10px] tracking-wide`}>
               {creditsLabel}
             </Badge>
           </div>
         </div>
 
-        <div className="h-px bg-white/5" />
+        <div className="h-px bg-[#1a1a1a]/20" />
 
-        <div className="grid grid-cols-3 gap-4">
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-1.5 text-stone-600">
-              <Calendar size={12} />
-              <span className="text-[10px] font-semibold tracking-widest uppercase">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="border-l-2 border-[#034f46]/35 pl-3">
+              <div className="flex items-center gap-1.5 text-[#6d6d63]">
+              <Calendar size={12} strokeWidth={1.5} />
+                <span className="text-[10px] font-semibold tracking-[0.08em]">
                 Date
               </span>
             </div>
-            <p className="text-sm text-stone-300">{formatDate(startTime)}</p>
+            <p className="mt-1 text-sm">{formatDate(startTime)}</p>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-1.5 text-stone-600">
-              <Clock size={12} />
-              <span className="text-[10px] font-semibold tracking-widest uppercase">
+          <div className="border-l-2 border-[#1a1a1a]/15 pl-3">
+              <div className="flex items-center gap-1.5 text-[#6d6d63]">
+              <Clock size={12} strokeWidth={1.5} />
+                <span className="text-[10px] font-semibold tracking-[0.08em]">
                 Time
               </span>
             </div>
-            <p className="text-sm text-stone-300">
+            <p className="mt-1 text-sm text-[#1a1a1a]">
               {formatTime(startTime)}
               <span className="text-stone-600 mx-1">–</span>
               {formatTime(endTime)}
             </p>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-1.5 text-stone-600">
-              <Video size={12} />
-              <span className="text-[10px] font-semibold tracking-widest uppercase">
+          <div className="border-l-2 border-[#1a1a1a]/15 pl-3">
+              <div className="flex items-center gap-1.5 text-[#6d6d63]">
+              <Video size={12} strokeWidth={1.5} />
+                <span className="text-[10px] font-semibold tracking-[0.08em]">
                 Duration
               </span>
             </div>
-            <p className="text-sm text-stone-300">
+            <p className="mt-1 text-sm text-[#1a1a1a]">
               {formatDuration(startTime, endTime)}
             </p>
           </div>
         </div>
 
         {feedback?.summary && (
-          <div className="rounded-xl border border-white/8 bg-[#141417] px-4 py-3 flex flex-col gap-1.5">
-            <p className="text-[10px] font-semibold text-stone-600 tracking-widest uppercase">
+          <div className="border-l-2 border-[#034f46] bg-[#034f46]/5 px-4 py-3">
+            <p className="text-[10px] font-semibold tracking-[0.08em] text-stone-500">
               AI Feedback
             </p>
-            <p className="text-xs text-stone-400 font-light leading-relaxed line-clamp-2">
+            <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-[#6d6d63]">
               {feedback.summary}
             </p>
           </div>
         )}
 
         {(streamCallId || recordingUrl || feedback) && (
-          <div className="flex items-center gap-2 flex-wrap pt-1">
+          <div className="flex flex-wrap items-center gap-2 border-t-2 border-[#1a1a1a]/12 pt-4">
             {!isPast && streamCallId && isUpcoming && (
               <Button variant="gold" size="sm" className="gap-2" asChild>
                 <Link href={`/call/${streamCallId}`}>
                   <Video size={13} />
-                  Join call
+                  Join Call
                 </Link>
               </Button>
             )}
@@ -174,7 +174,7 @@ export function AppointmentCard({ booking, mode, isPast = false }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  📹 Recording
+                  <Video size={13} /> Recording
                 </a>
               </Button>
             )}
@@ -185,7 +185,7 @@ export function AppointmentCard({ booking, mode, isPast = false }) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="gap-1.5 border-amber-400/20 text-amber-400 hover:bg-amber-400/10 hover:border-amber-400/40"
+                    className="gap-1.5 border-[#034f46]/25 text-[#034f46] hover:border-[#034f46] hover:bg-[#034f46]/5"
                     onClick={() => setFeedbackOpen(true)}
                   >
                     <Sparkles size={12} />
@@ -195,7 +195,7 @@ export function AppointmentCard({ booking, mode, isPast = false }) {
                     variant="outline"
                     className={RATING_STYLES[feedback.overallRating]}
                   >
-                    ✦ {RATING_LABEL[feedback.overallRating]} performance
+                    {RATING_LABEL[feedback.overallRating]} Performance
                   </Badge>
                 </>
               )}

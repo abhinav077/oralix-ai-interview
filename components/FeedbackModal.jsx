@@ -30,16 +30,16 @@ export function FeedbackModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-black border border-amber-200/20 text-stone-100 sm:max-w-3xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="dialog-editorial max-h-[85vh] overflow-y-auto sm:max-w-3xl">
 
         <DialogHeader className="relative">
-          <DialogTitle className="font-serif text-2xl tracking-tight">
+          <DialogTitle className="font-heading text-3xl tracking-tight">
             <GrayTitle>AI Feedback Report</GrayTitle>
           </DialogTitle>
 
           {intervieweeName && (
-            <p className="text-xs text-stone-500 font-light mt-1">
-              Performance analysis for {intervieweeName}
+            <p className="mt-1 text-xs font-light text-[#6d6d63]">
+              Performance Analysis For {intervieweeName}
             </p>
           )}
         </DialogHeader>
@@ -47,77 +47,77 @@ export function FeedbackModal({
         <div className="relative flex flex-col gap-5 mt-2">
           {/* Rating */}
           <div
-            className={`rounded-2xl border ${rating.className} bg-linear-to-br ${rating.bg} to-transparent p-6 flex items-center justify-between`}
+            className="flex items-center justify-between rounded-[24px] border-2 border-[#1a1a1a] bg-[#f0d7ff] p-6 text-[#1a1a1a]"
           >
             <div>
-              <p className="text-[10px] uppercase tracking-widest opacity-60">
-                Overall rating
+              <p className="text-[10px] tracking-[0.12em] text-[#034f46]">
+                Overall Rating
               </p>
               <p className="font-serif text-3xl">{rating.label}</p>
             </div>
 
-            <span className="text-4xl">{rating.emoji}</span>
+            <span className="grid size-12 place-items-center rounded-full border-2 border-[#1a1a1a] bg-[#ffffeb] text-[#034f46]" aria-hidden="true"><Sparkles size={20} /></span>
           </div>
 
           {/* Summary */}
-          <div className="bg-[#141417] border border-white/8 rounded-xl p-5">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles size={13} className="text-amber-400" />
-              <p className="text-[10px] uppercase tracking-widest text-stone-500">
+          <div className="rounded-[24px] border-2 border-[#1a1a1a]/15 bg-[#ffffeb] p-5">
+            <div className="mb-2 flex items-center gap-2">
+              <Sparkles size={15} className="text-[#034f46]" />
+              <p className="text-[10px] tracking-[0.12em] text-[#6d6d63]">
                 Summary
               </p>
             </div>
-            <p className="text-sm text-stone-300">{feedback.summary}</p>
+            <p className="text-sm text-[#1a1a1a]/75">{feedback.summary}</p>
           </div>
 
           {/* Recommendation */}
-          <div className="bg-[#141417] border border-white/8 rounded-xl p-5">
-            <p className="text-[10px] uppercase tracking-widest text-stone-500 mb-2">
+          <div className="rounded-[24px] border-2 border-[#1a1a1a]/15 bg-[#ffffeb] p-5">
+            <p className="mb-2 text-[10px] tracking-[0.12em] text-[#6d6d63]">
               Recommendation
             </p>
-            <p className="text-sm text-stone-300">{feedback.recommendation}</p>
+            <p className="text-sm text-[#1a1a1a]/75">{feedback.recommendation}</p>
           </div>
 
           {/* Sections */}
           <div className="grid gap-3">
             {[
               {
-                icon: <Brain size={14} className="text-amber-400" />,
+                icon: <Brain size={15} className="text-[#034f46]" />,
                 label: "Technical",
                 value: feedback.technical,
               },
               {
-                icon: <MessageSquare size={14} className="text-amber-400" />,
+                icon: <MessageSquare size={15} className="text-[#034f46]" />,
                 label: "Communication",
                 value: feedback.communication,
               },
               {
-                icon: <TrendingUp size={14} className="text-amber-400" />,
+                icon: <TrendingUp size={15} className="text-[#034f46]" />,
                 label: "Problem Solving",
                 value: feedback.problemSolving,
               },
             ].map((item) => (
               <div
                 key={item.label}
-                className="bg-[#141417] border border-white/8 rounded-xl p-5"
+                className="rounded-[24px] border-2 border-[#1a1a1a]/15 bg-[#ffffeb] p-5"
               >
                 <div className="flex items-center gap-2 mb-2">
                   {item.icon}
-                  <p className="text-[10px] uppercase tracking-widest text-stone-500">
+                  <p className="text-[10px] tracking-[0.12em] text-[#6d6d63]">
                     {item.label}
                   </p>
                 </div>
-                <p className="text-sm text-stone-300">{item.value}</p>
+                <p className="text-sm text-[#1a1a1a]/75">{item.value}</p>
               </div>
             ))}
           </div>
 
           {/* Strengths & Improvements */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-[#141417] border border-white/8 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <CheckCircle2 size={13} className="text-green-400" />
-                <p className="text-[10px] uppercase tracking-widest text-stone-500">
+            <div className="rounded-[24px] border-2 border-[#1a1a1a] bg-[#034f46] p-5 text-[#ffffeb]">
+              <div className="mb-3 flex items-center gap-2">
+                <CheckCircle2 size={15} className="text-[#f0d7ff]" />
+                <p className="text-[10px] tracking-[0.12em] text-[#ffffeb]/70">
                   Strengths
                 </p>
               </div>
@@ -127,7 +127,7 @@ export function FeedbackModal({
                   <Badge
                     key={i}
                     variant="outline"
-                    className="justify-start border-green-500/20 text-green-400 whitespace-normal"
+                    className="h-auto justify-start whitespace-normal border-[#ffffeb]/25 bg-[#ffffeb]/10 text-left text-[#ffffeb]"
                   >
                     ✓ {s}
                   </Badge>
@@ -135,11 +135,11 @@ export function FeedbackModal({
               </div>
             </div>
 
-            <div className="bg-[#141417] border border-white/8 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <AlertCircle size={13} className="text-amber-400" />
-                <p className="text-[10px] uppercase tracking-widest text-stone-500">
-                  To improve
+            <div className="rounded-[24px] border-2 border-[#1a1a1a] bg-[#ffa946] p-5 text-[#1a1a1a]">
+              <div className="mb-3 flex items-center gap-2">
+                <AlertCircle size={15} />
+                <p className="text-[10px] tracking-[0.12em] text-[#1a1a1a]/65">
+                  To Improve
                 </p>
               </div>
 
@@ -148,7 +148,7 @@ export function FeedbackModal({
                   <Badge
                     key={i}
                     variant="outline"
-                    className="justify-start border-red-500/20 text-red-400 whitespace-normal"
+                    className="h-auto justify-start whitespace-normal border-[#1a1a1a]/20 bg-[#ffffeb]/30 text-left text-[#1a1a1a]"
                   >
                     ✓ {imp}
                   </Badge>

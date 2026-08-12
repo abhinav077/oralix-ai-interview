@@ -1,153 +1,28 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, SignInButton } from "@clerk/nextjs";
 import { CheckoutButton } from "@clerk/nextjs/experimental";
-import { SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { PLANS } from "@/lib/data";
 import { Check } from "lucide-react";
 
 export default function PricingSection() {
   const { has, userId } = useAuth();
-
   const isSignedIn = !!userId;
   const isOnStarter = isSignedIn && has({ plan: "starter" });
   const isOnPro = isSignedIn && has({ plan: "pro" });
-  const isOnFree = isSignedIn && !isOnStarter && !isOnPro;
+  const activePlanSlug = isOnPro ? "pro" : isOnStarter ? "starter" : isSignedIn ? "free" : null;
 
-  const activePlanSlug = isOnPro
-    ? "pro"
-    : isOnStarter
-    ? "starter"
-    : isOnFree
-    ? "free"
-    : null;
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-      {PLANS.map((plan) => {
-        const isActive = activePlanSlug === plan.slug;
-
-        return (
-          <div
-            key={plan.name}
-            className={`relative rounded-2xl p-10 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 ${
-              plan.featured
-                ? "bg-[#141417] border border-amber-400/20"
-                : "bg-[#0f0f11] border border-white/10 hover:border-amber-400/10"
-            } ${isActive ? "ring-1 ring-amber-400/30" : ""}`}
-          >
-            {/* Most Popular badge */}
-            {plan.featured && !isActive && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-[#0a0a0b] text-xs font-bold tracking-wide uppercase px-3.5 py-1 rounded-full whitespace-nowrap">
-                Most Popular
-              </span>
-            )}
-
-            <p className="text-xs font-semibold text-stone-500 tracking-widest uppercase mb-5">
-              {plan.name}
-            </p>
-
-            <div className="flex items-end gap-1 mb-1.5">
-              <span
-                className={`font-serif text-5xl leading-none tracking-tight ${
-                  plan.featured
-                    ? "bg-linear-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent"
-                    : "bg-linear-to-br from-stone-100 to-stone-400 bg-clip-text text-transparent"
-                }`}
-              >
-                {plan.price}
-              </span>
-              <span className="text-sm text-stone-500 font-light mb-1.5">
-                /month
-              </span>
-            </div>
-
-            <p className="text-sm text-amber-400 mb-7">{plan.credits}</p>
-
-            <div className="h-px bg-white/10 mb-7" />
-
-            <ul className="space-y-3 mb-9 flex-1">
-              {plan.features.map((f) => (
-                <li
-                  key={f}
-                  className="flex items-start gap-2.5 text-sm text-stone-400"
-                >
-                  <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-
-            {/* CTA */}
-            {isActive ? (
-              // Already on this plan
-              <Button
-                variant={plan.featured ? "outline-gradient-stone" : "default"}
-                disabled
-                className="w-full opacity-50 cursor-not-allowed"
-              >
-                <span className="inline-flex items-center gap-2">
-                  <Check className="h-4 w-4" />
-                  Current plan
-                </span>
-              </Button>
-            ) : plan.planId === null ? (
-              // Free plan — no checkout needed
-              isSignedIn ? (
-                <Button
-                  variant="outline-gradient-stone"
-                  disabled
-                  className="w-full opacity-50 cursor-not-allowed"
-                >
-                  Default plan
-                </Button>
-              ) : (
-                <SignInButton mode="modal">
-                  <Button variant="outline-gradient-stone-hover" className="w-full">
-                    Get started free
-                  </Button>
-                </SignInButton>
-              )
-            ) : isSignedIn ? (
-              <CheckoutButton
-                planId={plan.planId}
-                planPeriod="month"
-                checkoutProps={{
-                  appearance: {
-                    elements: {
-                      drawerRoot: {
-                        zIndex: 2000,
-                      },
-                    },
-                  },
-                }}
-              >
-                <Button
-                  variant={plan.featured ? "outline-gradient-stone-hover" : "outline"}
-                  className="w-full"
-                >
-                  {activePlanSlug === "pro" && plan.slug === "starter"
-                    ? "Downgrade"
-                    : activePlanSlug === "starter" && plan.slug === "pro"
-                    ? "Upgrade →"
-                    : "Get started →"}
-                </Button>
-              </CheckoutButton>
-            ) : (
-              // Paid plan, signed out → sign in first
-              <SignInButton mode="modal">
-                <Button
-                  variant={plan.featured ? "outline-gradient-amber-hover" : "outline"}
-                  className="w-full"
-                >
-                  Get started →
-                </Button>
-              </SignInButton>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
+  return <div className="grid grid-cols-1 gap-4 md:grid-cols-3">{PLANS.map((plan) => {
+    const isActive = activePlanSlug === plan.slug;
+    return <article key={plan.name} className={`relative flex h-full flex-col rounded-[32px] border-2 border-[#1a1a1a] p-7 transition duration-300 hover:-translate-y-1 sm:p-9 ${plan.featured ? "bg-[#034f46] text-[#ffffeb]" : "bg-[#ffffeb] hover:bg-[#f0d7ff]"} ${isActive ? "ring-4 ring-[#ffa946]/35" : ""}`}>
+      {plan.featured && !isActive && <span className="absolute -top-3 left-7 rounded-full border-2 border-[#1a1a1a] bg-[#ffa946] px-3 py-1 text-xs font-medium">Most Popular</span>}
+      <p className={`mb-5 text-xs font-medium tracking-[0.08em] ${plan.featured ? "text-[#ffffeb]/60" : "text-[#6d6d63]"}`}>{plan.name}</p>
+      <div className="mb-1.5 flex items-end gap-1"><span className={`font-heading text-6xl leading-none tracking-[-.04em] ${plan.featured ? "text-[#f0d7ff]" : "text-[#1a1a1a]"}`}>{plan.price}</span><span className={`mb-1.5 text-sm ${plan.featured ? "text-[#ffffeb]/55" : "text-[#6d6d63]"}`}>/month</span></div>
+      <p className={`mb-7 text-sm ${plan.featured ? "text-[#f0d7ff]" : "text-[#034f46]"}`}>{plan.credits}</p>
+      <div className={`mb-7 h-px ${plan.featured ? "bg-[#ffffeb]/15" : "bg-[#1a1a1a]/15"}`} />
+      <ul className="mb-9 flex-1 space-y-3">{plan.features.map((feature) => <li key={feature} className={`flex items-start gap-2.5 text-sm ${plan.featured ? "text-[#ffffeb]/65" : "text-[#6d6d63]"}`}><Check className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${plan.featured ? "text-[#f0d7ff]" : "text-[#034f46]"}`} />{feature}</li>)}</ul>
+      {isActive ? <Button variant={plan.featured ? "outline-gradient-stone" : "default"} disabled className="w-full"><Check className="h-4 w-4" /> Current Plan</Button> : plan.planId === null ? (isSignedIn ? <Button variant="outline" disabled className="w-full">Default Plan</Button> : <SignInButton mode="modal"><Button variant="outline" className="w-full">Get Started Free</Button></SignInButton>) : isSignedIn ? <CheckoutButton planId={plan.planId} planPeriod="month" checkoutProps={{ appearance: { elements: { drawerRoot: { zIndex: 2000 } } } }}><Button variant={plan.featured ? "outline-gradient-stone" : "outline"} className="w-full">{activePlanSlug === "pro" && plan.slug === "starter" ? "Downgrade" : activePlanSlug === "starter" && plan.slug === "pro" ? "Upgrade →" : "Get Started →"}</Button></CheckoutButton> : <SignInButton mode="modal"><Button variant={plan.featured ? "outline-gradient-stone" : "outline"} className="w-full">Get Started →</Button></SignInButton>}
+    </article>;
+  })}</div>;
 }

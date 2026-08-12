@@ -1,7 +1,7 @@
 import { SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs'
 import React from 'react'
 import { Button } from './ui/button'
-import { CalendarDays, MessagesSquare, Users } from 'lucide-react';
+import { CalendarDays, LayoutDashboard, MessagesSquare, Users } from 'lucide-react';
 import Link from 'next/link';
 import { checkUser } from '../lib/checkUser';
 import CreditButton from './CreditButton';   
@@ -12,67 +12,75 @@ const Header = async () => {
   const user = await checkUser();
 
   return (
-    <nav className='fixed top-0 left-1/2 -translate-x-1/2 w-full lg:mx-auto lg:max-w-[1450px] z-50 flex items-center justify-between px-10 py-3 border-b border-white/7 backdrop-blur-xl  border-l border-r border-neutral-800'>
+    <nav className='fixed inset-x-0 top-0 z-50 isolate bg-transparent px-3 pt-3 sm:px-5'>
+      <div className='mx-auto flex min-h-14 w-full max-w-[1200px] items-center justify-between gap-3 rounded-full border-2 border-[#1a1a1a] bg-[#ffffeb]/95 px-3 py-2 backdrop-blur-md sm:px-5'>
+        <Link
+          href={'/'}
+          className='group flex shrink-0 items-center gap-2 rounded-full px-1.5 py-1 text-[#1a1a1a] transition-colors duration-200 hover:text-[#034f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034f46] focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffeb]'
+        >
+          <span className='grid size-8 place-items-center rounded-full border-2 border-[#1a1a1a] bg-[#f0d7ff] text-[#1a1a1a] transition-transform duration-200 group-hover:rotate-6'>
+            <MessagesSquare size={16} />
+          </span>
+          <span className='font-heading text-2xl tracking-[-0.03em] max-[359px]:sr-only'>Oralix</span>
+        </Link>
 
-    {/* Logo */}
-    <div className='flex items-center gap-2 text-lg font-bold'>
-      <Link href={'/'} className='flex items-center gap-2'>
-        <MessagesSquare />
-        <span>Oralix</span>
-      </Link>
-    </div>
+        {/* Redirecting Logic */}
+        {user && <RoleRedirect role={user.role} />}
 
-    {/* Redirecting Logic */}
-    {user && <RoleRedirect role={user.role} />}
-
-    {/* Sign In / Sign Up Buttons */}
-    <div className='flex items-center gap-3'>
+        {/* Sign In / Sign Up Buttons */}
+        <div className='flex shrink-0 items-center justify-end gap-1 sm:gap-2'>
         <Show when='signed-out'>
             <SignInButton mode='modal'>
-                <Button variant='ghost-gradient-stone-hover'> Sign In</Button> 
+                <Button size='sm' variant='outline'>Sign In</Button>
             </SignInButton>
               <SignUpButton mode='modal'>
-                <Button variant='ghost-gradient-amber-hover'> Get Started</Button> 
+                <Button size='sm' variant='default'>Get Started</Button>
               </SignUpButton>
         </Show>
         <Show when='signed-in'>
 
             {/* Links */}
             {user?.role === "INTERVIEWER" && (
-              <Button variant="ghost-gradient-stone-hover" asChild>
-                <Link href="/dashboard">Dashboard</Link>
+                <Button size="sm" variant="outline" asChild>
+                  <Link href="/dashboard">
+                  <LayoutDashboard size={15} />
+                  <span>Dashboard</span>
+                </Link>
               </Button>
             )}
 
             {user?.role === "INTERVIEWEE" && (
               <>
-                <Button variant="ghost-gradient-stone-hover" asChild>
-                  <Link href="/explore">
+                <Button size="sm" variant="outline" asChild>
+                  <Link href="/explore" aria-label="Explore interviewers">
                     <Users size={16} />
-                    <span className="hidden md:inline">Explore</span>
+                    <span>Explore</span>
                   </Link>
                 </Button>
-                <Button variant="outline-gradient-amber-hover" asChild>
-                  <Link href="/appointments">
+                <Button size="sm" variant="outline" asChild>
+                  <Link href="/appointments" aria-label="My appointments">
                     <CalendarDays size={16} />
-                    <span className="hidden md:inline">My Appointments</span>
+                    <span>Appointments</span>
                   </Link>
                 </Button>
               </>
             )}
 
-            <CreditButton
-              role={user?.role === "INTERVIEWER" ? "INTERVIEWER" : "INTERVIEWEE"}
-              credits={
-                (user?.role === "INTERVIEWER"
-                  ? user?.creditBalance
-                  : user?.credits) ?? 0
-              }
-            />
+            <div className="shrink-0">
+              <CreditButton
+                role={user?.role === "INTERVIEWER" ? "INTERVIEWER" : "INTERVIEWEE"}
+                credits={
+                  (user?.role === "INTERVIEWER"
+                    ? user?.creditBalance
+                    : user?.credits) ?? 0
+                }
+              />
+            </div>
 
-            <UserButton />
+            <div className="shrink-0"><UserButton /></div>
         </Show>
-    </div>
+        </div>
+      </div>
     </nav>
   )
 }

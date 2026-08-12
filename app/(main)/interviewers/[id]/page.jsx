@@ -1,180 +1,20 @@
-import { getInterviewerProfile } from '@/actions/booking';
-import { GrayTitle, SectionLabel } from '@/components/reusables';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import React from 'react'
-import Link from 'next/link';
-import {redirect, notFound} from 'next/navigation';
-import { db } from '@/lib/prisma';
-import { CATEGORY_LABEL, EXPECT_ITEMS } from '@/lib/data';
-import SlotPicker from './_components/SlotPicker';
-import { getCurrentUser } from '@/actions/user';
+import { getInterviewerProfile } from "@/actions/booking";
+import { getCurrentUser } from "@/actions/user";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { CATEGORY_LABEL, EXPECT_ITEMS } from "@/lib/data";
+import { ArrowLeft, Check } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import SlotPicker from "./_components/SlotPicker";
 
+export default async function InterviewerProfilePage({ params }) {
+  const { id } = await params;
+  const [dbUser, interviewer] = await Promise.all([getCurrentUser(), getInterviewerProfile(id)]);
+  if (!interviewer) notFound();
+  const expectItems = Array.isArray(EXPECT_ITEMS) ? EXPECT_ITEMS : Object.entries(EXPECT_ITEMS ?? {}).map(([key, value]) => Array.isArray(value) ? value : [value?.icon ?? key, value?.title ?? key, value?.desc ?? ""]);
 
-const InterviewerProfilePage = async ({params}) => {
-
-  const {id} = await params;
-
-  const dbUser = await getCurrentUser();
-
-
-  const interviewer = await getInterviewerProfile(id);
-  if(!interviewer) notFound();
-  const expectItems = Array.isArray(EXPECT_ITEMS)
-    ? EXPECT_ITEMS
-    : Object.entries(EXPECT_ITEMS ?? {}).map(([key, value]) =>
-        Array.isArray(value)
-          ? value
-          : [value?.icon ?? key, value?.title ?? key, value?.desc ?? '']
-      );
-  
-  return (
-    <main className="min-h-screen bg-black">
-      {/* ── Hero identity banner ── */}
-      <section className="relative border-b border-white/8 overflow-hidden">
-        
-
-        <div className="relative max-w-6xl mx-auto px-8 pt-20 pb-14 flex flex-col gap-8">
-          <Link href="/explore">
-            <Button variant="link" className="text-stone-500 cursor-pointer">
-              <ArrowLeft size={13} />
-              Back to explore
-            </Button>
-          </Link>
-
-          <div className="flex items-start gap-8">
-            <Avatar className="w-24 h-24 border-2 border-white/10 shrink-0 rounded-2xl">
-              <AvatarImage
-                src={interviewer.imageUrl}
-                alt={interviewer.name}
-                className="rounded-2xl"
-              />
-              <AvatarFallback className="rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 text-3xl font-medium">
-                {interviewer.name?.[0] ?? "?"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col gap-3 min-w-0 pt-1">
-              <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight">
-                <GrayTitle>{interviewer.name}</GrayTitle>
-              </h1>
-
-              {interviewer.title && interviewer.company && (
-                <p className="text-base text-stone-400 font-light">
-                  {interviewer.title}
-                  <span className="text-stone-700 mx-2">·</span>
-                  {interviewer.company}
-                </p>
-              )}
-
-              <div className="flex items-center gap-2 flex-wrap mt-1">
-                {interviewer.yearsExp && (
-                  <Badge
-                    variant="outline"
-                    className="border-white/10 text-stone-400 text-xs px-3 py-1"
-                  >
-                    {interviewer.yearsExp}+ yrs experience
-                  </Badge>
-                )}
-                <Badge
-                  variant="outline"
-                  className="border-amber-400/25 bg-amber-400/8 text-amber-400 text-xs px-3 py-1"
-                >
-                  {interviewer.creditRate ?? 10} credits / session
-                </Badge>
-                {interviewer.availabilities?.[0] && (
-                  <Badge
-                    variant="outline"
-                    className="border-green-500/20 bg-green-500/8 text-green-400 text-xs px-3 py-1"
-                  >
-                    🟢 Available
-                  </Badge>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Body ── */}
-      <div className="max-w-6xl mx-auto px-8 py-12 grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
-        {/* ── LEFT ── */}
-        <div className="lg:col-span-3 flex flex-col gap-6 order-2 lg:-order-1">
-          {interviewer.bio && (
-            <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8 flex flex-col gap-5">
-              <SectionLabel>About</SectionLabel>
-              <p className="text-base text-stone-300 font-light leading-relaxed">
-                {interviewer.bio}
-              </p>
-            </div>
-          )}
-
-          {interviewer.categories?.length > 0 && (
-            <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8 flex flex-col gap-5">
-              <div>
-                <SectionLabel>Specialties</SectionLabel>
-                <p className="text-sm text-stone-500 font-light mt-1">
-                  Interview categories this expert covers.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2.5">
-                {interviewer.categories.map((cat) => (
-                  <span
-                    key={cat}
-                    className="text-sm px-4 py-2 rounded-xl border border-amber-400/20 bg-amber-400/5 text-amber-400"
-                  >
-                    {CATEGORY_LABEL[cat] ?? cat}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8 flex flex-col gap-6">
-            <div>
-              <SectionLabel>What to expect</SectionLabel>
-              <p className="text-sm text-stone-500 font-light mt-1">
-                Every session on Prept includes the following.
-              </p>
-            </div>
-            <ul className="flex flex-col gap-5">
-              {expectItems.map((item) => {
-                const [icon, title, desc] = Array.isArray(item)
-                  ? item
-                  : [item?.icon, item?.title, item?.desc];
-
-                return (
-                  <li key={title} className="flex items-start gap-4">
-                    <span className="mt-0.5 w-10 h-10 shrink-0 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-lg">
-                      {typeof icon === 'string' ? icon : '✓'}
-                    </span>
-                    <div className="flex flex-col gap-0.5">
-                      <p className="text-sm font-medium text-stone-200">
-                        {title}
-                      </p>
-                      <p className="text-xs text-stone-500 font-light leading-relaxed">
-                        {desc}
-                      </p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-
-        {/* ── RIGHT — sticky slot picker ── */}
-        <div className="lg:col-span-2 lg:sticky top-24">
-          <SlotPicker
-            interviewer={interviewer}
-            interviewerCredits={interviewer.creditRate ?? 10}
-            userCredits={dbUser.credits}
-          />
-        </div>
-      </div>
-    </main>
-  )
+  return <main className="editorial-page overflow-hidden"><section className="px-5 pb-14 pt-28 sm:px-8 lg:px-10 lg:pt-36"><div className="editorial-wrap"><Button variant="outline" size="sm" className="ml-0 w-fit" asChild><Link href="/explore"><ArrowLeft size={15} /> All Interviewers</Link></Button><div className="mt-10 grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(11rem,.45fr)] md:items-end"><div className="flex min-w-0 items-end gap-5"><Avatar className="size-24 shrink-0 rounded-full border-2 border-[#1a1a1a] bg-[#f0d7ff] sm:size-28"><AvatarImage src={interviewer.imageUrl} alt={interviewer.name} /><AvatarFallback className="rounded-full bg-[#f0d7ff] font-heading text-4xl text-[#1a1a1a]">{interviewer.name?.[0] ?? "?"}</AvatarFallback></Avatar><div className="min-w-0"><p className="editorial-label">Interviewer Profile</p><h1 className="mt-4 text-[clamp(3.2rem,7vw,7rem)] leading-[.8]">{interviewer.name}</h1>{interviewer.title && interviewer.company && <p className="mt-5 text-base text-[#6d6d63]">{interviewer.title} · {interviewer.company}</p>}</div></div><div className="grid grid-cols-2 gap-3 border-t border-[#1a1a1a]/20 pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0"><div><p className="text-xs text-[#6d6d63]">Experience</p><p className="mt-1 font-heading text-2xl">{interviewer.yearsExp ? `${interviewer.yearsExp}+ years` : "Seasoned"}</p></div><div><p className="text-xs text-[#6d6d63]">Availability</p><p className="mt-1 text-sm font-medium text-[#034f46]">{interviewer.availabilities?.[0] ? "Open To Book" : "Not Listed"}</p></div></div></div></div></section>
+    <div className="editorial-wrap grid gap-10 px-5 pb-20 sm:px-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16 lg:px-0"><div className="order-2 flex min-w-0 flex-col gap-10 lg:order-1">{interviewer.bio && <section className="border-t-2 border-[#1a1a1a]/20 pt-8"><p className="editorial-label">Perspective</p><p className="mt-5 max-w-3xl font-heading text-[clamp(1.7rem,3vw,2.5rem)] leading-[1.08]">{interviewer.bio}</p></section>}{interviewer.categories?.length > 0 && <section className="border-t-2 border-[#1a1a1a]/20 pt-8"><p className="editorial-label">Practice focus</p><div className="mt-5 flex flex-wrap gap-2">{interviewer.categories.map((cat) => <span key={cat} className="teal-badge">{CATEGORY_LABEL[cat] ?? cat}</span>)}</div></section>}<section className="border-t-2 border-[#1a1a1a]/20 pt-8"><p className="editorial-label">Session standard</p><h2 className="mt-4 text-4xl">What to expect</h2><ul className="mt-6 grid gap-4 sm:grid-cols-2">{expectItems.map((item) => { const [, title, desc] = Array.isArray(item) ? item : [item?.icon, item?.title, item?.desc]; return <li key={title} className="paper-card p-5"><Check size={18} className="text-[#034f46]" /><p className="mt-4 text-sm font-medium">{title}</p><p className="mt-1.5 text-xs leading-5 text-[#6d6d63]">{desc}</p></li>; })}</ul></section></div><aside className="order-1 lg:sticky lg:top-24 lg:order-2 lg:self-start"><div className="mb-4 flex items-center justify-between border-b-2 border-[#1a1a1a]/20 pb-3"><p className="text-xs font-medium uppercase tracking-[.14em] text-[#6d6d63]">Reserve your time</p><p className="teal-badge !px-3 !py-1.5 !text-xs">{interviewer.creditRate ?? 10} credits</p></div><SlotPicker interviewer={interviewer} interviewerCredits={interviewer.creditRate ?? 10} userCredits={dbUser.credits} /></aside></div>
+  </main>;
 }
-
-export default InterviewerProfilePage
