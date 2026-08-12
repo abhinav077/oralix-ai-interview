@@ -11,14 +11,15 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import { GrayTitle } from "@/components/reusables";
 import { requestWithdrawal } from "@/actions/dashboard";
 import useFetch from "@/hooks/use-fetch";
-import { Check, CircleCheck, LoaderCircle, TrendingUp, Wallet } from "lucide-react";
+import { CircleCheck, TrendingUp, Wallet } from "lucide-react";
 import { formatDate } from "@/lib/helpers";
 
 const PAYMENT_METHODS = [
@@ -72,73 +73,68 @@ export default function EarningsSection({ stats, history }) {
     }
   };
 
-  const statsToShow = [
-    {
-      label: "Credit balance",
-      value: stats?.creditBalance ?? 0,
-      unit: "credits",
-      gold: true,
-      icon: <Wallet size={16} className="text-[#034f46]" strokeWidth={1.5} />,
-      dollarValue: balance,
-    },
-    {
-      label: "Total earned",
-      value: stats?.totalEarned ?? 0,
-      unit: "credits",
-      gold: false,
-      icon: <TrendingUp size={16} className="text-[#034f46]" strokeWidth={1.5} />,
-      dollarValue: totalEarnedDollars,
-    },
-    {
-      label: "Sessions done",
-      value: stats?.completedSessions ?? 0,
-      unit: "completed",
-      gold: false,
-      icon: <CircleCheck size={16} className="text-[#034f46]" strokeWidth={1.5} />,
-    },
-  ];
-
   return (
-    <section className="flex flex-col gap-8">
-      <div className="grid grid-cols-1 gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-3">
-        {statsToShow.map((stat) => (
-          <div key={stat.label} className="flex min-h-44 flex-col justify-between bg-[#151512] p-5 sm:p-6">
-            <div className="flex items-center justify-between">
-              <p className="text-[10px] font-semibold tracking-[0.16em] text-stone-500">
-                {stat.label}
-              </p>
-              {stat.icon}
-            </div>
-            <div>
-              <p
-                className={`font-heading text-5xl leading-none tracking-[-0.05em] ${
-                  stat.gold
-                    ? "text-[#034f46]"
-                    : "text-[#1a1a1a]"
-                }`}
-              >
-                {stat.value}
-              </p>
-              <p className="mt-2 text-xs text-stone-600">
-                {stat.unit.charAt(0).toUpperCase() + stat.unit.slice(1)}
-                {stat.dollarValue !== undefined
-                  ? ` · $${stat.dollarValue.toFixed(2)}`
-                  : ""}
-              </p>
-            </div>
+    <section className="flex flex-col gap-6">
+      {/* Stats row */}
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          {
+            label: "Credit balance",
+            value: stats?.creditBalance ?? 0,
+            unit: "credits",
+            gold: true,
+            icon: <Wallet size={16} className="text-amber-400" />,
+            dollarValue: balance,
+          },
+          {
+            label: "Total earned",
+            value: stats?.totalEarned ?? 0,
+            unit: "credits",
+            gold: false,
+            icon: <TrendingUp size={16} className="text-stone-400" />,
+            dollarValue: totalEarnedDollars,
+          },
+          {
+            label: "Sessions done",
+            value: stats?.completedSessions ?? 0,
+            unit: "completed",
+            gold: false,
+            icon: <CircleCheck size={16} className="text-stone-400" />,
+          },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className="bg-[#0f0f11] border border-white/10 rounded-2xl p-6 flex flex-col gap-2"
+          >
+            <span className="text-lg">{stat.icon}</span>
+            <p
+              className={`font-serif text-4xl leading-none tracking-tight ${
+                stat.gold
+                  ? "bg-linear-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent"
+                  : "bg-linear-to-br from-stone-100 to-stone-400 bg-clip-text text-transparent"
+              }`}
+            >
+              {stat.value}
+            </p>
+            <p className="text-xs text-stone-600">{stat.unit}</p>
+
+            <p className="text-xs text-stone-500">
+              {stat.label}{" "}
+              {stat.dollarValue !== undefined
+                ? `($${stat?.dollarValue?.toFixed(2)})`
+                : ""}
+            </p>
           </div>
         ))}
       </div>
 
-      <div className="grid gap-6 rounded-[32px] border-2 border-[#1a1a1a] bg-[#f0d7ff] p-5 sm:grid-cols-[1fr_auto] sm:items-end sm:p-8">
+      {/* Withdrawal trigger card */}
+      <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8 flex items-center justify-between gap-4">
         <div>
-          <p className="text-[10px] font-semibold tracking-[0.18em] text-[#034f46]">
-            Payout Desk
-          </p>
-          <h2 className="mt-2 font-heading text-3xl tracking-tight text-[#1a1a1a]">
-            Withdraw Earnings
+          <h2 className="font-serif text-xl tracking-tight">
+            <GrayTitle>Withdraw earnings</GrayTitle>
           </h2>
-          <p className="mt-2 text-sm leading-6 text-[#1a1a1a]/65">
+          <p className="text-xs text-stone-500 font-light mt-1">
             20% platform fee applies. Processed within 2–3 business days.
           </p>
         </div>
@@ -148,26 +144,24 @@ export default function EarningsSection({ stats, history }) {
           onClick={() => setOpen(true)}
           className="shrink-0"
         >
-          Request Withdrawal
+          Request withdrawal
         </Button>
       </div>
 
-      {history?.length > 0 ? (
-        <div className="border border-white/10 bg-[#151512]">
-          <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6">
-            <p className="font-heading text-xl tracking-tight text-stone-100">Withdrawal history</p>
-            <p className="font-mono text-xs text-stone-500">
-              {String(history.length).padStart(2, "0")} requests
-            </p>
-          </div>
-          <div className="divide-y divide-white/10">
+      {/* Withdrawal history */}
+      {history?.length > 0 && (
+        <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8 flex flex-col gap-5">
+          <p className="text-xs font-semibold text-stone-500 tracking-widest uppercase">
+            Withdrawal history
+          </p>
+          <div className="flex flex-col gap-3">
             {history.map((p) => (
               <div
                 key={p.id}
-                className="grid gap-3 px-5 py-4 sm:grid-cols-[1fr_auto] sm:items-center sm:px-6"
+                className="flex items-center justify-between bg-[#141417] border border-white/8 rounded-xl px-5 py-4"
               >
                 <div className="flex flex-col gap-0.5">
-                  <p className="text-sm text-stone-200">
+                  <p className="text-sm text-stone-300">
                     {p.credits} credits → ${p.netAmount.toFixed(2)}
                   </p>
                   <p className="text-xs text-stone-600">
@@ -176,11 +170,11 @@ export default function EarningsSection({ stats, history }) {
                 </div>
                 <Badge
                   variant="outline"
-                  className={`w-fit rounded-none px-2 py-1 text-[10px] tracking-[0.12em] ${
+                  className={
                     p.status === "PROCESSED"
                       ? "border-green-500/20 bg-green-500/10 text-green-400"
                       : "border-amber-500/20 bg-amber-500/10 text-amber-400"
-                  }`}
+                  }
                 >
                   {p.status.charAt(0) + p.status.slice(1).toLowerCase()}
                 </Badge>
@@ -188,40 +182,41 @@ export default function EarningsSection({ stats, history }) {
             ))}
           </div>
         </div>
-      ) : (
-        <div className="border border-dashed border-white/15 bg-[#11110f] p-6">
-          <p className="font-heading text-xl tracking-tight text-stone-100">Withdrawal history</p>
-          <p className="mt-2 text-sm leading-6 text-stone-400">No withdrawal requests yet. Your completed requests will appear here.</p>
-        </div>
       )}
 
+      {/* Dialog */}
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="dialog-editorial max-w-md">
+        <DialogContent className="bg-[#0f0f11] border border-white/10 text-stone-100 max-w-md">
           {done ? (
-            <div className="flex flex-col items-center gap-4 py-8 text-center">
-              <span className="grid size-14 place-items-center rounded-full border border-green-500/20 bg-green-500/10">
-                <Check size={23} className="text-green-400" />
+            <div className="py-8 text-center flex flex-col items-center gap-4">
+              <span className="w-14 h-14 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-2xl">
+                ✓
               </span>
-              <p className="font-heading text-2xl text-[#1a1a1a]">Request Submitted</p>
-              <p className="text-xs leading-5 text-stone-500">
+              <p className="font-serif text-xl">
+                <GrayTitle>Request submitted</GrayTitle>
+              </p>
+              <p className="text-xs text-stone-500 font-light">
                 We&apos;ll process your withdrawal within 2–3 business days.
               </p>
             </div>
           ) : (
             <>
               <DialogHeader>
-                <DialogTitle className="font-heading text-2xl tracking-tight text-stone-100">
-                  Request Withdrawal
+                <DialogTitle className="font-serif text-xl tracking-tight">
+                  <GrayTitle>Request withdrawal</GrayTitle>
                 </DialogTitle>
-                <DialogDescription className="text-xs leading-5 text-stone-500">
-                  Your full balance of <span className="text-amber-300">{balance} credits</span> will be withdrawn.
+                <DialogDescription className="text-stone-500 text-xs font-light">
+                  Your full balance of{" "}
+                  <span className="text-amber-400">{balance} credits</span> will
+                  be withdrawn.
                 </DialogDescription>
               </DialogHeader>
 
-              <Separator className="bg-white/10" />
+              <Separator className="bg-white/5" />
 
               <div className="flex flex-col gap-5 py-2">
-                <div className="flex flex-col gap-2 border border-white/10 bg-black/15 p-4">
+                {/* Fee breakdown */}
+                <div className="rounded-xl bg-[#141417] border border-white/8 p-4 flex flex-col gap-2">
                   <div className="flex justify-between text-xs text-stone-500">
                     <span>Balance (1 Cr = $5)</span>
                     <span className="text-green-400">${balance}</span>
@@ -230,15 +225,16 @@ export default function EarningsSection({ stats, history }) {
                     <span>Platform fee (20%)</span>
                     <span className="text-red-400">− ${feeAmount}</span>
                   </div>
-                  <Separator className="my-1 bg-white/10" />
+                  <Separator className="bg-white/8 my-1" />
                   <div className="flex justify-between text-sm font-medium">
                     <span className="text-stone-300">You receive</span>
-                    <span className="text-amber-300">${netAmount}</span>
+                    <span className="text-amber-400">${netAmount}</span>
                   </div>
                 </div>
 
+                {/* Payment method — Tabs */}
                 <div className="flex flex-col gap-2">
-                  <Label className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-500">
+                  <Label className="text-stone-400 text-xs">
                     Payment method
                   </Label>
                   <Tabs
@@ -248,9 +244,13 @@ export default function EarningsSection({ stats, history }) {
                       setDetail("");
                     }}
                   >
-                    <TabsList className="grid h-auto w-full grid-cols-3 rounded-none border border-white/10 bg-[#11110f] p-1">
+                    <TabsList className="bg-[#141417] border border-white/10 w-full">
                       {PAYMENT_METHODS.map((m) => (
-                        <TabsTrigger key={m.value} value={m.value} className="rounded-none text-xs">
+                        <TabsTrigger
+                          key={m.value}
+                          value={m.value}
+                          className="flex-1 text-xs"
+                        >
                           {m.label}
                         </TabsTrigger>
                       ))}
@@ -258,28 +258,32 @@ export default function EarningsSection({ stats, history }) {
                   </Tabs>
                 </div>
 
+                {/* Payment detail */}
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="withdrawal-detail" className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-500">
+                  <Label className="text-stone-400 text-xs">
                     {selectedMethod?.label} details
                   </Label>
                   <Input
-                    id="withdrawal-detail"
                     value={detail}
                     onChange={(e) => setDetail(e.target.value)}
                     placeholder={selectedMethod?.placeholder}
-                    className="rounded-none border-white/10 bg-[#11110f] text-stone-100"
+                    className="bg-[#141417] border-white/10 text-stone-100"
                   />
                 </div>
 
                 {error && (
-                  <p className="border-l-2 border-red-400 bg-red-400/5 px-3 py-2 text-xs text-red-300" role="alert">
+                  <p className="text-xs text-red-400">
                     {error?.message || error}
                   </p>
                 )}
               </div>
 
               <DialogFooter className="gap-2">
-                <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={loading}>
+                <Button
+                  variant="outline"
+                  onClick={() => handleOpenChange(false)}
+                  disabled={loading}
+                >
                   Cancel
                 </Button>
                 <Button
@@ -292,9 +296,8 @@ export default function EarningsSection({ stats, history }) {
                       paymentDetail: detail,
                     })
                   }
-                  className="gap-2"
                 >
-                  {loading ? <><LoaderCircle size={15} className="animate-spin" /> Submitting…</> : "Confirm Withdrawal"}
+                  {loading ? "Submitting…" : "Confirm withdrawal"}
                 </Button>
               </DialogFooter>
             </>

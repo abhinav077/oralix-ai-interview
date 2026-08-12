@@ -1,39 +1,52 @@
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider"
-import { ClerkProvider } from '@clerk/nextjs'
-import { ui } from "@clerk/ui";
 import Header from "@/components/Header";
-import FirstVisitIntro from "@/components/FirstVisitIntro";
+import { DM_Sans, Lora } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { Toaster } from "sonner";
+
+const lora = Lora({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-sans",
+});
 
 export const metadata = {
   title: "Oralix",
-  description: "Practice with experienced interviewers. Earn by becoming one.",
+  description: "",
 };
-
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider ui={ui}>
+    <ClerkProvider
+      appearance={{
+        theme: dark,
+      }}
+    >
       <html lang="en" suppressHydrationWarning>
-        <body className="bg-background text-foreground">
-          <div className="min-h-dvh bg-background">
+        <head />
+        <body className={`${lora.variable} ${dmSans.variable} min-h-screen bg-black font-sans text-stone-100`}>
           <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange>
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            <main className="min-h-screen">{children}</main>
+            <Toaster richColors />
 
-              <Header/>
-
-              <FirstVisitIntro />
-
-              <main className="max-w-full">{children}</main>
-
-              <Toaster richColors/>
-
-            </ThemeProvider>
-            </div>
+            <footer className="relative z-10 bg-black border-t border-white/7 py-12 mx-auto px-6 flex flex-wrap items-center justify-center text-stone-400">
+            </footer>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

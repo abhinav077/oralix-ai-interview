@@ -1,19 +1,14 @@
-'use client';
+"use client";
 
 import {
   Code,
   CodeBlock,
   CodeHeader,
-} from '@/components/animate-ui/components/animate/code';
-import { Code2, File } from 'lucide-react';
+} from "@/components/animate-ui/components/animate/code";
+import { Code2 } from "lucide-react";
+import React from "react";
 
-
-export const CodeDemo = ({
-  duration,
-  delay,
-  writing,
-  cursor,
-}) => {
+export const CodeDemo = ({ duration, delay, writing, cursor }) => {
   return (
     <Code
       key={`${duration}-${delay}-${writing}-${cursor}`}
@@ -49,7 +44,8 @@ const useFetch = (url, options) => {
   return { data, loading, error };
 };
 
-export default useFetch;`}
+export default useFetch;'
+`}
     >
       <CodeHeader icon={Code2} copyButton>
         use-fetch.jsx

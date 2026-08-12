@@ -1,14 +1,120 @@
 import Link from "next/link";
-import { ArrowUpRight, Circle } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { CATEGORY_LABEL } from "@/lib/data";
 import { formatTime } from "@/lib/helpers";
 
 export default function InterviewerCard({ interviewer }) {
-  const availability = interviewer.availabilities?.[0];
-  return <article className="paper-card group relative flex min-h-[23rem] flex-col overflow-hidden p-5 transition-transform duration-300 hover:-translate-y-1 sm:p-6">
-    <div className="flex items-start justify-between gap-4"><div className="flex min-w-0 items-center gap-3"><Avatar className="size-12 rounded-full border-2 border-[#1a1a1a] bg-[#f0d7ff]"><AvatarImage src={interviewer.imageUrl} alt={interviewer.name} /><AvatarFallback className="rounded-full bg-[#f0d7ff] font-heading text-xl text-[#1a1a1a]">{interviewer.name?.[0] ?? "?"}</AvatarFallback></Avatar><div className="min-w-0"><h2 className="truncate text-2xl leading-none">{interviewer.name}</h2>{interviewer.title && interviewer.company && <p className="mt-1 truncate text-xs text-[#6d6d63]">{interviewer.title} · {interviewer.company}</p>}</div></div>{interviewer.yearsExp && <span className="shrink-0 text-xs text-[#034f46]">{interviewer.yearsExp}+ yrs</span>}</div>
-    <div className="mt-8 flex flex-1 flex-col">{interviewer.bio && <p className="line-clamp-3 text-sm leading-6 text-[#6d6d63]">{interviewer.bio}</p>}{interviewer.categories?.length > 0 && <div className="mt-5 flex flex-wrap gap-2">{interviewer.categories.slice(0, 4).map((cat) => <span key={cat} className="teal-badge !px-3 !py-1.5 !text-xs">{CATEGORY_LABEL[cat] ?? cat}</span>)}</div>}</div>
-    <div className="mt-8 border-t border-[#1a1a1a]/20 pt-4"><div className="flex items-end justify-between gap-4"><div><p className="text-xs text-[#6d6d63]">Session Rate</p><p className="mt-1 font-heading text-3xl leading-none text-[#034f46]">{interviewer.creditRate ?? 10}<span className="ml-1.5 font-sans text-xs text-[#6d6d63]">credits</span></p></div><p className={`max-w-[9.5rem] text-right text-xs leading-5 ${availability ? "text-[#034f46]" : "text-[#6d6d63]"}`}>{availability ? <span className="inline-flex items-center justify-end gap-1.5"><Circle size={7} fill="currentColor" /> Available {formatTime(availability.startTime)}–{formatTime(availability.endTime)}</span> : "No Availability Set"}</p></div><Link href={`/interviewers/${interviewer.id}`} className="mt-5 flex items-center justify-between rounded-[12px] border-2 border-[#1a1a1a] px-3.5 py-3 text-sm font-medium text-[#1a1a1a] transition hover:bg-[#f0d7ff] hover:text-[#1a1a1a]">View Profile <ArrowUpRight size={16} /></Link></div>
-  </article>;
+  const {
+    id,
+    name,
+    imageUrl,
+    title,
+    company,
+    yearsExp,
+    bio,
+    categories,
+    creditRate,
+    availabilities,
+  } = interviewer;
+  const availability = availabilities?.[0];
+
+  return (
+    <Card className="relative !border-white/10 !bg-[#111114] !text-stone-100 shadow-[0_18px_50px_rgba(0,0,0,0.22)] hover:!border-amber-400/30">
+      <div className="absolute inset-0 bg-linear-to-br from-amber-400/5 via-transparent to-transparent pointer-events-none" />
+
+      <CardContent className="flex flex-col gap-5">
+        {/* Top row — avatar + name + years */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="w-11 h-11 border border-white/10 shrink-0">
+              <AvatarImage src={imageUrl} alt={name} />
+              <AvatarFallback className="bg-amber-400/10 border border-amber-400/20 text-amber-400 text-sm font-medium">
+                {name?.[0] ?? "?"}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-sm font-medium text-stone-200 leading-tight">
+                {name}
+              </p>
+              {title && company && (
+                <p className="text-xs text-stone-500 mt-0.5">
+                  {title} · {company}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {yearsExp && (
+            <Badge
+              variant="outline"
+              className="shrink-0 border-white/10 text-stone-500 text-xs"
+            >
+              {yearsExp}+ yrs
+            </Badge>
+          )}
+        </div>
+
+        {/* Bio */}
+        {bio && (
+          <p className="text-xs text-stone-400 font-light leading-relaxed line-clamp-2">
+            {bio}
+          </p>
+        )}
+
+        {/* Categories */}
+        {categories?.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {categories.slice(0, 4).map((cat) => (
+              <span
+                key={cat}
+                className="text-xs px-2.5 py-1 rounded-lg border border-amber-400/20 bg-amber-400/5 text-amber-400"
+              >
+                {CATEGORY_LABEL[cat] ?? cat}
+              </span>
+            ))}
+            {categories.length > 4 && (
+              <span className="text-xs px-2.5 py-1 rounded-lg border border-white/10 text-stone-600">
+                +{categories.length - 4} more
+              </span>
+            )}
+          </div>
+        )}
+
+        <Separator />
+
+        {/* Bottom row — credit rate + availability + CTA */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-1">
+            <p className="text-lg font-serif leading-none bg-linear-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent">
+              {creditRate ?? 10}
+              <span className="text-xs text-stone-500 font-sans ml-1">
+                credits / session
+              </span>
+            </p>
+            {availability ? (
+              <p className="text-xs text-stone-600">
+                🟢 {formatTime(availability.startTime)} –{" "}
+                {formatTime(availability.endTime)}
+              </p>
+            ) : (
+              <p className="text-xs text-stone-700">No availability set</p>
+            )}
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="shrink-0 border-amber-400/20 text-amber-400 hover:bg-amber-400/10 hover:border-amber-400/40"
+            asChild
+          >
+            <Link href={`/interviewers/${id}`}>View profile →</Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

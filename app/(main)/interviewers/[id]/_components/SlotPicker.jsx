@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { GrayTitle } from "@/components/reusables";
 import { bookSlot } from "@/actions/booking";
 import useFetch from "@/hooks/use-fetch";
 import UpgradeModal from "@/components/UpgradeModal";
@@ -28,6 +29,7 @@ export default function SlotPicker({
   const [selectedDate, setSelectedDate] = useState(dates[0]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+
   const summaryRef = useRef(null);
 
   useEffect(() => {
@@ -40,6 +42,7 @@ export default function SlotPicker({
   }, [selectedSlot]);
 
   const { data, loading, error, fn: bookFn } = useFetch(bookSlot);
+
   const availability = interviewer.availabilities?.[0];
   const canAfford = userCredits >= interviewerCredits;
 
@@ -78,23 +81,19 @@ export default function SlotPicker({
 
   const handleConfirm = () => {
     if (!selectedSlot) return;
-    bookFn(
-      interviewer.id,
-      selectedSlot.startTime.toISOString(),
-      selectedSlot.endTime.toISOString()
-    );
+    bookFn({
+      interviewerId: interviewer.id,
+      startTime: selectedSlot.startTime.toISOString(),
+      endTime: selectedSlot.endTime.toISOString(),
+    });
   };
 
   if (!availability) {
     return (
-      <div className="border border-dashed border-white/15 bg-white/[0.02] px-6 py-10 text-center">
-        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-stone-600">
-          Calendar unavailable
-        </p>
-        <p className="mt-3 font-heading text-xl tracking-[-0.03em] text-stone-300">
-          No availability listed yet.
-        </p>
-        <p className="mt-2 text-xs leading-5 text-stone-600">Check back later.</p>
+      <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8 text-center flex flex-col items-center gap-2">
+        <span className="text-2xl">🕐</span>
+        <p className="text-sm text-stone-500">No availability set yet.</p>
+        <p className="text-xs text-stone-700">Check back later.</p>
       </div>
     );
   }
@@ -107,52 +106,53 @@ export default function SlotPicker({
         reason={`You need ${interviewerCredits} credits to book this session. Your current balance is ${userCredits}.`}
       />
 
-      <div className="booking-surface flex flex-col gap-4">
-        <section className="border border-white/10 bg-[#101115] p-5 sm:p-6">
-          <div className="flex items-start justify-between gap-4 border-b border-white/8 pb-5">
+      <div className="flex flex-col gap-4">
+        {/* ── Main picker card ── */}
+        <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-7 flex flex-col gap-6">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-amber-200/80">
-                Book a session
-              </p>
-              <h2 className="mt-2 font-heading text-2xl tracking-[-0.04em] text-stone-200">
-                Choose your practice window.
+              <h2 className="font-serif text-xl tracking-tight">
+                <GrayTitle>Book a session</GrayTitle>
               </h2>
-              <p className="mt-2 text-xs leading-5 text-stone-500">
+              <p className="text-xs text-stone-500 font-light mt-1">
                 Select a date and available time slot.
               </p>
             </div>
-            <div className="shrink-0 text-right">
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.13em] text-stone-600">
-                Session
-              </p>
-              <p className="mt-1 font-heading text-xl tracking-[-0.03em] text-amber-200">
+            <div className="text-right shrink-0">
+              <p className="text-xs text-stone-600">Cost</p>
+              <p className="font-serif text-2xl leading-none bg-linear-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent">
                 {interviewerCredits}
-                <span className="ml-1 font-sans text-[0.65rem] font-medium text-stone-500">
+                <span className="text-xs font-sans text-stone-500 ml-1">
                   cr
                 </span>
               </p>
             </div>
           </div>
 
-          <div className="mt-5 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          {/* Date tabs */}
+          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none -mx-1 px-1">
             {dates.map((date) => {
               const label = formatDateTab(date);
-              const active = date.toDateString() === selectedDate.toDateString();
-
+              const active =
+                date.toDateString() === selectedDate.toDateString();
               return (
                 <button
                   key={date.toDateString()}
                   type="button"
                   onClick={() => handleDateChange(date)}
-                  aria-pressed={active}
-                  className={`min-w-15 shrink-0 border px-2.5 py-2 text-center text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#101115] ${
+                  className={`shrink-0 flex flex-col items-center px-3.5 py-2.5 rounded-xl border text-xs transition-all duration-200 ${
                     active
-                      ? "border-[#1a1a1a] bg-[#f0d7ff] text-[#1a1a1a]"
-                      : "border-[#1a1a1a]/20 text-[#6d6d63] hover:border-[#034f46] hover:text-[#1a1a1a]"
+                      ? "border-amber-400/40 bg-amber-400/10 text-amber-400"
+                      : "border-white/10 text-stone-500 hover:border-white/20 hover:text-stone-400"
                   }`}
                 >
-                  <span className="block font-semibold">{label.top}</span>
-                  <span className={`mt-0.5 block text-[0.65rem] ${active ? "text-stone-700" : "text-stone-700"}`}>
+                  <span className="font-medium">{label.top}</span>
+                  <span
+                    className={`mt-0.5 ${
+                      active ? "text-amber-500/70" : "text-stone-700"
+                    }`}
+                  >
                     {label.bottom}
                   </span>
                 </button>
@@ -160,124 +160,115 @@ export default function SlotPicker({
             })}
           </div>
 
-          <div className="mt-5 border-t border-white/8 pt-5">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-stone-600">
-                Available times
-              </p>
-              <p className="text-[0.65rem] text-stone-600">45 minutes</p>
+          <div className="h-px bg-white/5" />
+
+          {/* Time grid */}
+          {slots.length === 0 ? (
+            <p className="text-xs text-stone-600 text-center py-4">
+              No slots in the availability window for this date.
+            </p>
+          ) : (
+            <div className="grid grid-cols-3 gap-2">
+              {slots.map((slot) => {
+                const isSelected =
+                  selectedSlot?.startTime.getTime() ===
+                  slot.startTime.getTime();
+
+                return (
+                  <button
+                    key={slot.startTime.toISOString()}
+                    type="button"
+                    disabled={slot.isBooked}
+                    onClick={() => handleSlotClick(slot)}
+                    className={`relative text-xs px-2 py-2.5 rounded-xl border transition-all duration-200 ${
+                      isSelected
+                        ? "border-amber-400/60 bg-amber-400/15 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.08)]"
+                        : slot.isBooked
+                        ? "border-white/5 bg-white/2 text-stone-700 cursor-not-allowed"
+                        : "border-white/10 text-stone-400 hover:border-amber-400/30 hover:text-amber-400 hover:bg-amber-400/5 cursor-pointer"
+                    }`}
+                  >
+                    {formatTime(slot.startTime)}
+                    {slot.isBooked && (
+                      <span
+                        className="absolute inset-x-0 bottom-0.5 text-center text-stone-700 leading-none"
+                        style={{ fontSize: "9px" }}
+                      >
+                        booked
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
-            {slots.length === 0 ? (
-              <p className="border border-dashed border-white/10 px-3 py-5 text-center text-xs leading-5 text-stone-600">
-                No slots in the availability window for this date.
-              </p>
-            ) : (
-              <div className="grid grid-cols-3 gap-1.5">
-                {slots.map((slot) => {
-                  const isSelected =
-                    selectedSlot?.startTime.getTime() === slot.startTime.getTime();
-                  const unavailable = slot.isBooked || !slot.available;
+          )}
+        </div>
 
-                  return (
-                    <button
-                      key={slot.startTime.toISOString()}
-                      type="button"
-                      disabled={slot.isBooked}
-                      onClick={() => handleSlotClick(slot)}
-                      aria-pressed={isSelected}
-                      aria-label={`${formatTime(slot.startTime)}${
-                        unavailable ? ", unavailable" : ", available"
-                      }`}
-                      className={`min-h-12 border px-1 py-2 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#101115] ${
-                        isSelected
-                          ? "border-[#1a1a1a] bg-[#f0d7ff] text-[#1a1a1a]"
-                          : unavailable
-                            ? "cursor-not-allowed border-[#1a1a1a]/10 bg-[#e4e4d0]/45 text-[#8a8a80] line-through"
-                            : "border-[#1a1a1a]/20 text-[#6d6d63] hover:border-[#034f46] hover:bg-[#f0d7ff] hover:text-[#1a1a1a]"
-                      }`}
-                    >
-                      <span className="block">{formatTime(slot.startTime)}</span>
-                      {unavailable && (
-                        <span className="mt-0.5 block text-[0.57rem] no-underline">
-                          {slot.isBooked ? "reserved" : "unavailable"}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </section>
-
+        {/* ── Inline confirm card ── */}
         {selectedSlot && (
-          <section
+          <div
             ref={summaryRef}
-            className={`border p-5 transition-colors ${
-              data?.success
-                ? "border-emerald-300/45 bg-emerald-300/[0.06]"
-                : "border-amber-300/35 bg-[#14130f]"
-            }`}
-            aria-live="polite"
+            className="bg-[#0f0f11] border border-amber-400/20 rounded-2xl p-6 flex flex-col gap-4"
           >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.15em] text-amber-200/85">
-                  {data?.success ? "Session created" : "Selected session"}
-                </p>
-                <p className="mt-2 font-heading text-xl tracking-[-0.035em] text-stone-200">
+            <p className="text-xs font-semibold text-stone-500 tracking-widest uppercase">
+              Your booking
+            </p>
+
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between text-xs">
+                <span className="text-stone-500">Date</span>
+                <span className="text-stone-300">
                   {formatDateFull(selectedSlot.startTime)}
-                </p>
-              </div>
-              {data?.success ? (
-                <span className="border border-emerald-300/35 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-emerald-200">
-                  Opening
                 </span>
-              ) : (
-                <span className="border border-amber-300/25 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-amber-200">
-                  Selected
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-stone-500">Time</span>
+                <span className="text-stone-300">
+                  {formatTime(selectedSlot.startTime)} –{" "}
+                  {formatTime(selectedSlot.endTime)}
                 </span>
-              )}
-            </div>
-
-            <div className="mt-5 grid gap-3 border-y border-white/8 py-4 text-xs sm:grid-cols-3">
-              <div>
-                <p className="text-stone-600">Time</p>
-                <p className="mt-1 text-stone-300">
-                  {formatTime(selectedSlot.startTime)} – {formatTime(selectedSlot.endTime)}
-                </p>
               </div>
-              <div>
-                <p className="text-stone-600">Duration</p>
-                <p className="mt-1 text-stone-300">{SLOT_DURATION_MINUTES} minutes</p>
-              </div>
-              <div>
-                <p className="text-stone-600">Credits</p>
-                <p className="mt-1 text-amber-200">−{interviewerCredits}</p>
+              <div className="flex justify-between text-xs">
+                <span className="text-stone-500">Duration</span>
+                <span className="text-stone-300">
+                  {SLOT_DURATION_MINUTES} minutes
+                </span>
               </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between text-xs">
+            <Separator className="bg-white/8" />
+
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-stone-400">Credits charged</span>
+              <span className="font-serif text-lg bg-linear-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent leading-none">
+                −{interviewerCredits}
+              </span>
+            </div>
+            <div className="flex justify-between text-xs">
               <span className="text-stone-600">Balance after</span>
-              <span className="text-stone-400">{userCredits - interviewerCredits} credits</span>
+              <span className="text-stone-500">
+                {userCredits - interviewerCredits} credits
+              </span>
             </div>
 
-            <div className="mt-4 border-l border-amber-300/45 bg-white/[0.025] px-3 py-2.5">
-              <p className="text-xs leading-5 text-stone-500">
-                A video call room will be created and you&apos;ll be redirected immediately after confirming.
+            <div className="flex items-start gap-2.5 rounded-xl border border-white/8 bg-white/2 px-3.5 py-3">
+              <span className="text-sm shrink-0">🎥</span>
+              <p className="text-xs text-stone-500 font-light leading-relaxed">
+                A video call room will be created and you&apos;ll be redirected
+                immediately after confirming.
               </p>
             </div>
 
-            {error && <p className="mt-4 text-xs text-red-400">{error?.message || error}</p>}
-
-            <Separator className="my-4 bg-white/8" />
+            {error && (
+              <p className="text-xs text-red-400">{error?.message || error}</p>
+            )}
 
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="flex-1 rounded-none border-white/15 text-stone-300"
-                disabled={loading || data?.success}
+                className="flex-1"
+                disabled={loading}
                 onClick={() => setSelectedSlot(null)}
               >
                 Change slot
@@ -285,14 +276,14 @@ export default function SlotPicker({
               <Button
                 variant="gold"
                 size="sm"
-                className="flex-1 rounded-none"
-                disabled={loading || data?.success}
+                className="flex-1"
+                disabled={loading}
                 onClick={handleConfirm}
               >
-                {data?.success ? "Opening session…" : loading ? "Creating call…" : "Confirm booking"}
+                {loading ? "Creating call…" : "Confirm →"}
               </Button>
             </div>
-          </section>
+          </div>
         )}
       </div>
     </>

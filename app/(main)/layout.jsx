@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const MainLayout = ({children}) => {
-  return <div className='relative min-h-screen'>{children}</div>
-}
+const layout = ({ children }) => {
+  return <div className="mt-16">{children}</div>;
+};
 
-export default MainLayout;
+export default layout;

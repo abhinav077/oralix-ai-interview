@@ -10,9 +10,9 @@ import {
   StreamCall,
 } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
-import "stream-chat-react/dist/css/index.css";
+import "stream-chat-react/dist/css/v2/index.css";
 
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import CallUI from "./CallUI";
 
 export default function CallRoom({
@@ -26,8 +26,6 @@ export default function CallRoom({
   const router = useRouter();
   const [videoClient, setVideoClient] = useState(null);
   const [call, setCall] = useState(null);
-  const [connectionError, setConnectionError] = useState(null);
-  const [retryKey, setRetryKey] = useState(0);
   const clientRef = useRef(null);
   const joinedRef = useRef(false);
 
@@ -35,7 +33,6 @@ export default function CallRoom({
     // Guard against React StrictMode double-invoke in development
     if (joinedRef.current) return;
     joinedRef.current = true;
-    setConnectionError(null);
 
     const client = new StreamVideoClient({
       apiKey,
@@ -56,11 +53,7 @@ export default function CallRoom({
         setVideoClient(client);
         setCall(callInstance);
       })
-      .catch((error) => {
-        console.error(error);
-        setConnectionError("We couldn't join this interview room. Check your connection and try again.");
-        joinedRef.current = false;
-      });
+      .catch(console.error);
 
     return () => {
       callInstance.leave().catch(() => {});
@@ -75,50 +68,18 @@ export default function CallRoom({
     currentUser.imageUrl,
     currentUser.name,
     token,
-    retryKey,
   ]);
 
   const handleLeave = useCallback(() => {
     router.push(isInterviewer ? "/dashboard" : "/appointments");
   }, [isInterviewer, router]);
 
-  if (connectionError) {
-    return (
-      <section role="alert" className="grid min-h-[calc(100dvh-4rem)] place-items-center bg-[#1a1a1a] px-5 text-[#ffffeb]">
-        <div className="flex w-full max-w-sm flex-col items-center border border-red-300/15 bg-[#11120f] px-8 py-10 text-center">
-          <h1 className="text-lg font-medium">Unable to join</h1>
-          <p className="mt-2 text-sm leading-6 text-stone-400">{connectionError}</p>
-          <button type="button" onClick={() => { setVideoClient(null); setCall(null); setRetryKey((key) => key + 1); }} className="mt-6 inline-flex items-center gap-2 rounded-[12px] border-2 border-[#ffffeb]/30 bg-[#f0d7ff] px-4 py-2 text-sm text-[#1a1a1a] transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f0d7ff]">
-            <RefreshCw size={14} /> Try again
-          </button>
-        </div>
-      </section>
-    );
-  }
-
   if (!videoClient || !call) {
     return (
-      <section
-        role="status"
-        aria-live="polite"
-        className="grid min-h-[calc(100dvh-4rem)] place-items-center bg-[#1a1a1a] px-5 text-[#ffffeb]"
-      >
-        <div className="flex w-full max-w-sm flex-col items-center rounded-[32px] border-2 border-[#ffffeb]/20 bg-[#034f46] px-8 py-10 text-center sm:px-10 sm:py-12">
-          <span className="grid size-14 place-items-center rounded-full border-2 border-[#ffffeb]/20 bg-[#f0d7ff]">
-            <Loader2
-              size={22}
-              aria-hidden="true"
-              className="animate-spin text-[#034f46] motion-reduce:animate-none"
-            />
-          </span>
-          <h1 className="mt-6 text-lg font-medium tracking-tight text-stone-100">
-            Joining interview room
-          </h1>
-          <p className="mt-2 max-w-64 text-sm leading-6 text-stone-500">
-            Securing your video, audio, and session chat.
-          </p>
-        </div>
-      </section>
+      <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center gap-3">
+        <Loader2 size={28} className="text-amber-400 animate-spin" />
+        <p className="text-stone-500 text-sm font-light">Connecting to call…</p>
+      </div>
     );
   }
 

@@ -12,7 +12,7 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-[32px] border-2 border-[#1a1a1a] bg-[#ffffeb] py-(--card-spacing) text-sm text-[#1a1a1a] transition-[border-color,background-color,transform] duration-200 hover:-translate-y-0.5 data-[selected=true]:bg-[#f0d7ff] aria-invalid:border-[#8d2f2f] aria-disabled:pointer-events-none aria-disabled:opacity-55 [--card-spacing:--spacing(6)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-[30px] *:[img:last-child]:rounded-b-[30px]",
+        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-[32px] border-2 border-white/10 bg-[#111114] py-(--card-spacing) text-sm text-stone-100 transition-[border-color,background-color,transform] duration-200 hover:-translate-y-0.5 data-[selected=true]:bg-[#18181c] aria-invalid:border-[#8d2f2f] aria-disabled:pointer-events-none aria-disabled:opacity-55 [--card-spacing:--spacing(6)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-[30px] *:[img:last-child]:rounded-b-[30px]",
         className
       )}
       {...props} />

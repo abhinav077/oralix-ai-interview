@@ -1,6 +1,7 @@
 "use client";
 
 import { AppointmentCard } from "@/components/AppointmentCard";
+import { GrayTitle } from "@/components/reusables";
 import { ClipboardList } from "lucide-react";
 
 export default function AppointmentsSection({ appointments }) {
@@ -13,37 +14,34 @@ export default function AppointmentsSection({ appointments }) {
   );
 
   return (
-    <section className="flex flex-col gap-8">
-      <div className="grid gap-4 border-b border-white/10 pb-6 sm:grid-cols-[1fr_auto] sm:items-end">
-        <div>
-          <div className="mb-3 flex size-9 items-center justify-center border border-amber-300/25 bg-amber-300/10">
-            <ClipboardList size={17} className="text-amber-300" strokeWidth={1.5} />
-          </div>
-          <h2 className="font-heading text-3xl tracking-tight text-stone-100">Session schedule</h2>
-        </div>
-        <p className="max-w-xs text-sm leading-6 text-stone-500">
-          Track every scheduled conversation and keep a clear record of completed work.
+    <section className="flex flex-col gap-6">
+      <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8">
+        <span className="w-10 h-10 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center mb-4">
+          <ClipboardList size={18} className="text-amber-400" />
+        </span>
+        <h2 className="font-serif text-xl tracking-tight">
+          <GrayTitle>Appointments</GrayTitle>
+        </h2>
+        <p className="text-xs text-stone-500 font-light mt-1">
+          All your scheduled and past sessions.
         </p>
       </div>
 
       {appointments.length === 0 ? (
-        <div className="grid min-h-72 place-items-center border border-dashed border-amber-200/20 bg-[#151512] px-6 text-center">
-          <div>
-            <p className="font-heading text-xl text-stone-200">No appointments yet.</p>
-            <p className="mt-2 text-xs leading-5 text-stone-600">
-              Once interviewees book your slots, they&apos;ll appear here.
-            </p>
-          </div>
+        <div className="bg-[#0f0f11] border border-white/10 rounded-2xl py-20 text-center">
+          <p className="text-stone-600 text-sm">No appointments yet.</p>
+          <p className="text-stone-700 text-xs mt-1">
+            Once interviewees book your slots, they&apos;ll appear here.
+          </p>
         </div>
       ) : (
         <div className="flex flex-col gap-10">
           {scheduled.length > 0 && (
             <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <p className="text-[10px] font-semibold tracking-[0.2em] text-amber-300/80">Upcoming</p>
-                <p className="font-mono text-xs text-stone-500">{String(scheduled.length).padStart(2, "0")} sessions</p>
-              </div>
-              <div className="grid grid-cols-1 gap-4 overflow-visible lg:grid-cols-2">
+              <p className="text-xs font-semibold text-stone-500 tracking-widest uppercase">
+                Upcoming ({scheduled.length})
+              </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 {scheduled.map((b) => (
                   <AppointmentCard key={b.id} booking={b} mode="interviewer" />
                 ))}
@@ -53,11 +51,10 @@ export default function AppointmentsSection({ appointments }) {
 
           {past.length > 0 && (
             <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <p className="text-[10px] font-semibold tracking-[0.2em] text-stone-500">Archive</p>
-                <p className="font-mono text-xs text-stone-500">{String(past.length).padStart(2, "0")} sessions</p>
-              </div>
-              <div className="grid grid-cols-1 gap-4 overflow-visible lg:grid-cols-2">
+              <p className="text-xs font-semibold text-stone-500 tracking-widest uppercase">
+                Past ({past.length})
+              </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 {past.map((b) => (
                   <AppointmentCard
                     key={b.id}

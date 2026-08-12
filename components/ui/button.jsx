@@ -1,5 +1,6 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva } from "class-variance-authority";
+import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
@@ -47,10 +48,13 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  asChild = false,
   ...props
 }) {
+  const Comp = asChild ? Slot.Root : ButtonPrimitive
+
   return (
-    <ButtonPrimitive
+    <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props} />
